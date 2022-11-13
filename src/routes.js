@@ -26,7 +26,9 @@ const routes = [
     disableNavbar: true
   },
   {
-    component: lazy(() => import("./pages/Capabilities/Capabilities")),
+    component: lazy(() =>
+      import("./pages/Capabilities/Capabilities")
+    ),
     label: "Capabilities",
     path: "/capabilities",
     title: "Capabilities"
@@ -44,7 +46,9 @@ const routes = [
     title: "Capability"
   },
   {
-    component: lazy(() => import("./pages/SubCapability/SubCapability")),
+    component: lazy(() =>
+      import("./pages/SubCapability/SubCapability")
+    ),
     label: "Sub Capability",
     path: "/sub-capability",
     title: "Sub Capability"
@@ -62,7 +66,9 @@ const routes = [
     title: "Rubric"
   },
   {
-    component: lazy(() => import("./pages/CreateSchool/CreateSchool")),
+    component: lazy(() =>
+      import("./pages/CreateSchool/CreateSchool")
+    ),
     label: "Create School",
     path: "/create-school",
     title: "Create School"
@@ -76,7 +82,9 @@ const routes = [
     title: "Add School Students"
   },
   {
-    component: lazy(() => import("./pages/CreateSurvey/CreateSurvey")),
+    component: lazy(() =>
+      import("./pages/CreateSurvey/CreateSurvey")
+    ),
     label: "Create Survey",
     path: "/create-survey",
     title: "Create Survey"
@@ -86,6 +94,12 @@ const routes = [
     label: "Survey",
     path: "/survey",
     title: "Survey"
+  },
+  {
+    component: lazy(() => import("./pages/Questions/Questions")),
+    label: "Questions",
+    path: "/questions",
+    title: "Questions"
   }
 ];
 

@@ -61,31 +61,34 @@ export const ModelHeader = styled.div`
 `;
 
 export const ModelBody = styled(Box)`
-  width: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-direction: column;
-  width: 30rem;
-  padding-top: 5rem;
+  form {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    width: 30rem;
+    padding-top: 5rem;
 
-  input {
-    width: 100%;
-    margin-bottom: 0.5rem;
-    padding: 0.7rem 0;
-  }
-  textarea {
-    width: 100%;
-    max-width: 100%;
-    margin-bottom: 0.5rem;
-    padding: 0.7rem 0;
-    height: 4rem;
+    input {
+      width: 100%;
+      margin-bottom: 0.5rem;
+      padding: 0.7rem 0;
+    }
+    textarea {
+      width: 100%;
+      max-width: 100%;
+      margin-bottom: 0.5rem;
+      padding: 0.7rem 0;
+      height: 4rem;
+    }
   }
 `;
 
-export const ModelButton = styled.div`
+export const ModelButton = styled.button`
   padding: 0.6rem 0;
-  background-color: ${({ cancel }) => (cancel ? "#f94743" : "#81d0c7")};
+  background-color: ${({ cancel }) =>
+    cancel ? "#f94743" : "#81d0c7"};
   border-radius: 2rem;
   cursor: pointer;
   color: white;

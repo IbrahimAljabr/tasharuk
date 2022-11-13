@@ -5,21 +5,20 @@ export const Form = styled.form`
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 30rem;
+  width: 35rem;
   height: 100%;
   flex-direction: column;
 
   input {
-    padding: 0.8rem;
-    margin: 0.8rem 0;
-    border-radius: 1rem;
+    padding: 1rem;
+    margin: 1rem 0;
+    border-radius: 0.5rem;
     border: 1px solid white;
     box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
-    width: 14rem;
+    width: 20rem;
   }
 
   h2 {
-    padding-right: 15rem;
     font-weight: 200;
   }
 `;
@@ -36,15 +35,16 @@ export const MainContainer = styled.div`
 export const Button = styled.button`
   background-color: #57c1b5;
   border-radius: 1rem;
-  margin: 1rem 0;
+  margin: 4rem 0;
   border: none;
-  padding: 0.8rem 7rem;
+  padding: 1rem 10rem;
   color: white;
+  cursor: pointer;
 `;
 
 export const Container = styled.div`
-  width: 22rem;
-  height: 20rem;
+  width: 100%;
+  height: 100%;
   box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
   display: flex;
   justify-content: space-between;
@@ -52,9 +52,18 @@ export const Container = styled.div`
   background-color: white;
 
   ${mq.desktop`
-    width: 60rem;
-    height: 25rem;
+    width: 100%;
+    height: 100%;
   `};
+
+  select {
+    background-color: white;
+    padding: 0.5rem;
+    position: absolute;
+    right: 2rem;
+    top: 2rem;
+    border-radius: 0.5rem;
+  }
 `;
 
 export const ImageContainer = styled.div`
@@ -68,7 +77,7 @@ export const ImageContainer = styled.div`
   ${mq.desktop`
     display: flex;
     justify-content: center;
-    width: 30rem;
-    height: 25rem;
+    width: 70%;
+    height: 100%;
   `};
 `;

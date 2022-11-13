@@ -9,11 +9,19 @@ import routes from "./routes";
  * @return {JSX.Element}
  */
 function App() {
+  const lang = localStorage.getItem("language");
+
   return (
-    <React.Suspense fallback={<span>Loading...</span>}>
+    <React.Suspense fallback={<span />}>
       <Routes>
         {routes.map(
-          ({ label, exact, path, disableNavbar, component: Component }) => (
+          ({
+            label,
+            exact,
+            path,
+            disableNavbar,
+            component: Component
+          }) => (
             <Route
               key={label}
               path={path}
@@ -24,7 +32,10 @@ function App() {
                 ) : (
                   <>
                     <Header />
-                    <Component />
+                    <Component
+                      lang={lang}
+                      dir={lang === "arabic" && "rtl"}
+                    />
                   </>
                 )
               }

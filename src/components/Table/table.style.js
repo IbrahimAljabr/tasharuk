@@ -16,6 +16,7 @@ export const TdDelete = styled.div`
 export const TdEdit = styled.div`
   text-align: center;
   cursor: pointer;
+  /* border-left: 1px solid rgba(224, 224, 224, 1); */
 
   svg {
     width: 1.2rem;
