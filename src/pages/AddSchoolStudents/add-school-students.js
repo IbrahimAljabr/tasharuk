@@ -8,7 +8,7 @@ export const SubContainer = styled.div`
 `;
 
 export const OutLineButton = styled.div`
-  padding: 0.5rem 4rem;
+  padding: 0.5rem 6rem;
   background-color: #81d0c7;
   border-radius: 2rem;
   cursor: pointer;
@@ -23,6 +23,7 @@ export const FileButton = styled.div`
   cursor: pointer;
   color: green;
   border: 1px solid gray;
+  margin-top: 2rem;
 `;
 
 export const FormContainer = styled.div`
@@ -37,6 +38,20 @@ export const AddContainer = styled.div`
   align-items: center;
   width: 100%;
   flex-direction: column;
+
+  input::-webkit-file-upload-button {
+    padding: 0.5rem 1.5rem;
+    background-color: white;
+    border-radius: 2rem;
+    cursor: pointer;
+    color: green;
+    border: 1px solid gray;
+    margin-right: 2rem;
+  }
+
+  input {
+    background-color: #f8f8f8;
+  }
 `;
 
 export const Form = styled.div`

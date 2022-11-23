@@ -11,7 +11,7 @@ export const Form = styled.form`
 
   input {
     padding: 1rem;
-    margin: 1rem 0;
+    margin: 1rem 0 0.5rem 0;
     border-radius: 0.5rem;
     border: 1px solid white;
     box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
@@ -80,4 +80,13 @@ export const ImageContainer = styled.div`
     width: 70%;
     height: 100%;
   `};
+`;
+
+export const Error = styled.p`
+  margin: 0;
+  padding: 0;
+  color: red;
+  font-size: 0.8rem;
+  text-align: left;
+  height: 1rem;
 `;

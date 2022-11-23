@@ -6,13 +6,26 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import React from "react";
-import { TdDelete, TdEdit } from "./table.style";
+import { TdDelete, TdEdit } from "../../components/Table/table.style";
 
+import { useNavigate } from "react-router-dom";
 import { ReactComponent as Delete } from "../../assets/icons/delete.svg";
 import { ReactComponent as Edit } from "../../assets/icons/edit.svg";
+import { useSchool } from "../../contexts/UserContext";
 
-function TableShare({ data, columns }) {
-  console.log(`🚀🚀 ~~ TableShare ~~ data`, data);
+function SchoolTable({ data, handleDelete }) {
+  console.log(`🚀🚀 ~~ SchoolTable ~~ data`, data);
+  const { schoolData, setSchoolData } = useSchool();
+  const navigate = useNavigate();
+  const header = [
+    "School Name",
+    "Country",
+    "Contract Person",
+    "Phone Number",
+    "Date",
+    "Status"
+  ];
+
   return (
     <TableContainer component={Paper} sx={{ marginBottom: 15 }}>
       <Table sx={{ minWidth: 650 }} aria-label='simple table'>
@@ -26,13 +39,13 @@ function TableShare({ data, columns }) {
               }
             }}
           >
-            {columns.map((row) => (
+            {header.map((row) => (
               <TableCell
                 key={row}
                 sx={{ borderRight: 1, borderColor: "lightgray" }}
                 align='center'
               >
-                {row?.header}
+                {row}
               </TableCell>
             ))}
 
@@ -53,23 +66,56 @@ function TableShare({ data, columns }) {
 
         <TableBody>
           {data?.map((row) => (
-            <TableRow key={row}>
-              {columns.map((cal) => (
-                <TableCell
-                  sx={{ borderRight: 1, borderColor: "lightgray" }}
-                  align='center'
-                  key={row}
-                >
-                  {row[cal.field]}
-                </TableCell>
-              ))}
+            <TableRow key={row?.company_register_id}>
+              <TableCell
+                sx={{ borderRight: 1, borderColor: "lightgray" }}
+                align='center'
+              >
+                {row?.school_name_en}
+              </TableCell>
+
+              <TableCell
+                sx={{ borderRight: 1, borderColor: "lightgray" }}
+                align='center'
+              >
+                {row?.country?.country_name_en}
+              </TableCell>
+
+              <TableCell
+                sx={{ borderRight: 1, borderColor: "lightgray" }}
+                align='center'
+              ></TableCell>
+
+              <TableCell
+                sx={{ borderRight: 1, borderColor: "lightgray" }}
+                align='center'
+              ></TableCell>
+
+              <TableCell
+                sx={{ borderRight: 1, borderColor: "lightgray" }}
+                align='center'
+              ></TableCell>
+
+              <TableCell
+                sx={{ borderRight: 1, borderColor: "lightgray" }}
+                align='center'
+              >
+                {row?.is_active ? "True" : "False"}
+              </TableCell>
 
               <TableCell
                 sx={{ borderRight: 1, borderColor: "lightgray" }}
                 style={{ width: 50 }}
                 align='center'
               >
-                <TdEdit>
+                <TdEdit
+                  onClick={() => {
+                    setSchoolData(row);
+                    navigate(`/create-school/${row?.id}`, {
+                      state: { row }
+                    });
+                  }}
+                >
                   <Edit />
                 </TdEdit>
               </TableCell>
@@ -78,7 +124,7 @@ function TableShare({ data, columns }) {
                 style={{ width: 50 }}
                 align='center'
               >
-                <TdDelete>
+                <TdDelete onClick={() => handleDelete(row?.id)}>
                   <Delete />
                 </TdDelete>
               </TableCell>
@@ -90,4 +136,4 @@ function TableShare({ data, columns }) {
   );
 }
 
-export default TableShare;
+export default SchoolTable;

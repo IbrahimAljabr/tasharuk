@@ -50,20 +50,28 @@ const routes = [
       import("./pages/SubCapability/SubCapability")
     ),
     label: "Sub Capability",
-    path: "/sub-capability",
+    path: "/sub-capability/:id",
     title: "Sub Capability"
   },
   {
     component: lazy(() => import("./pages/Indicator/Indicator")),
     label: "Indicator",
-    path: "/indicator",
+    path: "/indicator/:id",
     title: "Indicator"
   },
   {
     component: lazy(() => import("./pages/Rubric/Rubric")),
     label: "Rubric",
-    path: "/rubric",
+    path: "/rubric/:id",
     title: "Rubric"
+  },
+  {
+    component: lazy(() =>
+      import("./pages/CreateSchool/CreateSchool")
+    ),
+    label: "Create School",
+    path: "/create-school/:id",
+    title: "Create School"
   },
   {
     component: lazy(() =>
@@ -78,7 +86,7 @@ const routes = [
       import("./pages/AddSchoolStudents/AddSchoolStudents")
     ),
     label: "Add School Students",
-    path: "/add-school-students",
+    path: "/add-school-students/:id",
     title: "Add School Students"
   },
   {

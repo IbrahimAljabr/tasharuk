@@ -1,3 +1,4 @@
+import Select from "@mui/material/Select";
 import styled from "styled-components";
 
 export const SubContainer = styled.div`
@@ -5,22 +6,31 @@ export const SubContainer = styled.div`
   width: 100%;
   display: flex;
   align-items: center;
+  justify-content: center;
 `;
 
-export const OutLineButton = styled.div`
-  padding: 0.5rem 1.5rem;
+export const OutLineButton = styled.button`
+  padding: 0.5rem 3rem;
   background-color: white;
   margin: 0 2rem 0 0;
   border: 1px solid gray;
-  border-radius: 2rem;
+  border-radius: 1rem;
+  height: 2rem;
   cursor: pointer;
-  max-width: 8rem;
 `;
 
 export const FormContainer = styled.div`
   display: flex;
   justify-content: center;
   width: 100%;
+`;
+
+export const ErrorText = styled.div`
+  height: 2rem;
+  font-size: 0.8rem;
+  padding: 0;
+  margin: 0;
+  color: red;
 `;
 
 export const Form = styled.div`
@@ -33,7 +43,12 @@ export const Form = styled.div`
   border-radius: 1rem;
   box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
 
-  div {
-    margin-bottom: 1rem;
+  input {
+    background-color: white;
   }
+`;
+
+export const SelectInput = styled(Select)`
+  width: 10rem;
+  background-color: white;
 `;

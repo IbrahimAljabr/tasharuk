@@ -39,7 +39,7 @@ export const ModelContainer = styled(Box)`
   border-radius: 1rem;
   padding: 1rem;
   width: 50rem;
-  min-height: 30rem;
+  min-height: 25rem;
   display: flex;
 `;
 
@@ -68,18 +68,22 @@ export const ModelBody = styled(Box)`
     align-items: center;
     flex-direction: column;
     width: 30rem;
-    padding-top: 5rem;
+    padding: 5rem 0;
 
     input {
       width: 100%;
       margin-bottom: 0.5rem;
-      padding: 0.7rem 0;
+      padding: 0.7rem 0.2rem;
     }
+    div {
+      width: 100%;
+    }
+
     textarea {
       width: 100%;
       max-width: 100%;
       margin-bottom: 0.5rem;
-      padding: 0.7rem 0;
+      padding: 0.7rem 0.2rem;
       height: 4rem;
     }
   }

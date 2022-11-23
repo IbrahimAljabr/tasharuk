@@ -1,8 +1,8 @@
 import AddCircleIcon from "@mui/icons-material/AddCircle";
 import Container from "@mui/material/Container";
 import Modal from "@mui/material/Modal";
-import React, { useState } from "react";
-import TableShare from "../../components/Table/Table";
+import React, { useEffect, useState } from "react";
+import { getAllCapability } from "../../services/capabilities";
 import {
   Create,
   ModelBody,
@@ -11,14 +11,26 @@ import {
   ModelHeader,
   ModelSwitch
 } from "../Capabilities/capabilities.style";
+import CapabilityTable from "./Table";
 
 function Capability({ lang }) {
   const [open, setOpen] = useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
 
+  const [data, setData] = useState([]);
+
+  const getCapability = async () => {
+    const res = await getAllCapability();
+    setData(res?.response_body);
+  };
+
+  useEffect(() => {
+    getCapability();
+  }, []);
+
   return (
-    <Container dir={lang === "arabic" && "rtl"}>
+    <Container dir={lang === "arabic" ? "rtl" : undefined}>
       <Create>
         <AddCircleIcon />
         <p onClick={handleOpen}>Create Capability</p>
@@ -50,7 +62,7 @@ function Capability({ lang }) {
           </ModelContainer>
         </Modal>
       </Create>
-      <TableShare />
+      <CapabilityTable data={data} />
     </Container>
   );
 }

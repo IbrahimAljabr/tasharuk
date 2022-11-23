@@ -6,13 +6,18 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import React from "react";
-import { TdDelete, TdEdit } from "./table.style";
+import { TdDelete, TdEdit } from "../../components/Table/table.style";
 
 import { ReactComponent as Delete } from "../../assets/icons/delete.svg";
 import { ReactComponent as Edit } from "../../assets/icons/edit.svg";
 
-function TableShare({ data, columns }) {
-  console.log(`🚀🚀 ~~ TableShare ~~ data`, data);
+function SubCapabilityTable({
+  data,
+  handleNavigate,
+  handleDelete,
+  handleEdit
+}) {
+  console.log(`🚀🚀 ~~ SubCapabilityTable ~~ data`, data);
   return (
     <TableContainer component={Paper} sx={{ marginBottom: 15 }}>
       <Table sx={{ minWidth: 650 }} aria-label='simple table'>
@@ -26,25 +31,24 @@ function TableShare({ data, columns }) {
               }
             }}
           >
-            {columns.map((row) => (
-              <TableCell
-                key={row}
-                sx={{ borderRight: 1, borderColor: "lightgray" }}
-                align='center'
-              >
-                {row?.header}
-              </TableCell>
-            ))}
+            <TableCell
+              sx={{ borderRight: 1, borderColor: "lightgray" }}
+              align='center'
+            >
+              Schema Name
+            </TableCell>
 
             <TableCell
               sx={{ borderRight: 1, borderColor: "lightgray" }}
               align='center'
+              style={{ width: 50 }}
             >
               Edit
             </TableCell>
             <TableCell
               sx={{ borderRight: 1, borderColor: "lightgray" }}
               align='center'
+              style={{ width: 50 }}
             >
               Delete
             </TableCell>
@@ -53,23 +57,25 @@ function TableShare({ data, columns }) {
 
         <TableBody>
           {data?.map((row) => (
-            <TableRow key={row}>
-              {columns.map((cal) => (
-                <TableCell
-                  sx={{ borderRight: 1, borderColor: "lightgray" }}
-                  align='center'
-                  key={row}
-                >
-                  {row[cal.field]}
-                </TableCell>
-              ))}
+            <TableRow key={row?.id}>
+              <TableCell
+                sx={{
+                  borderRight: 1,
+                  borderColor: "lightgray",
+                  cursor: "pointer"
+                }}
+                align='center'
+                onClick={() => handleNavigate(row?.id)}
+              >
+                {row?.name_en}
+              </TableCell>
 
               <TableCell
                 sx={{ borderRight: 1, borderColor: "lightgray" }}
                 style={{ width: 50 }}
                 align='center'
               >
-                <TdEdit>
+                <TdEdit onClick={() => handleEdit(row)}>
                   <Edit />
                 </TdEdit>
               </TableCell>
@@ -78,7 +84,7 @@ function TableShare({ data, columns }) {
                 style={{ width: 50 }}
                 align='center'
               >
-                <TdDelete>
+                <TdDelete onClick={() => handleDelete(row?.id)}>
                   <Delete />
                 </TdDelete>
               </TableCell>
@@ -90,4 +96,4 @@ function TableShare({ data, columns }) {
   );
 }
 
-export default TableShare;
+export default SubCapabilityTable;

@@ -1,115 +1,110 @@
 import AddCircleIcon from "@mui/icons-material/AddCircle";
-import Checkbox from "@mui/material/Checkbox";
 import Container from "@mui/material/Container";
-import Paper from "@mui/material/Paper";
-import Table from "@mui/material/Table";
-import TableBody from "@mui/material/TableBody";
-import TableCell from "@mui/material/TableCell";
-import TableContainer from "@mui/material/TableContainer";
-import TableHead from "@mui/material/TableHead";
-import TableRow from "@mui/material/TableRow";
-import React from "react";
-import { useNavigate } from "react-router-dom";
-import { ReactComponent as Delete } from "../../assets/icons/delete.svg";
-import { ReactComponent as Edit } from "../../assets/icons/edit.svg";
-import { TdDelete, TdEdit } from "../../components/Table/table.style";
+import React, { useEffect, useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
+import { getAllSurvey } from "../../services/survey";
 import { Create } from "../Capabilities/capabilities.style";
+import SurveyTable from "./Table";
 
 function Survey({ lang }) {
+  const [open, setOpen] = useState(false);
+  const handleOpen = () => setOpen(true);
+  const handleClose = () => setOpen(false);
+
   const navigate = useNavigate();
 
-  const herders = ["Capability Name", "User Type"];
+  const id = useLocation()?.state?.id;
+
+  const value = {
+    description: "",
+    name: "",
+    score: ""
+  };
+
+  const [data, setData] = useState([]);
+  const [formValues, setFormValues] = useState(value);
+  const [formErrors, setFormErrors] = useState(value);
+
+  const handleChange = (event) => {
+    const { name, value } = event.target;
+    setFormValues({ ...formValues, [name]: value });
+  };
+
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    setFormErrors(validate(formValues));
+  };
+
+  const validate = (value) => {
+    const errors = {};
+
+    if (!value.name) {
+      errors.name = "Name Is Required";
+    }
+
+    if (!value.description) {
+      errors.description = "Description Is Required";
+    }
+
+    if (!value.score) {
+      errors.score = "Score Is Required";
+    }
+
+    return errors;
+  };
+
+  const handleNavigate = async (id) => {
+    navigate(`/indicator/${id}`, { state: { id } });
+  };
+
+  let order = data.reduce((acc, value) => {
+    return (acc = acc > value.order_no ? acc : value.order_no);
+  }, 0);
+
+  const addRubric = async () => {
+    const body = {
+      indicator_id: id,
+      description_en: formValues.description,
+      name_en: formValues.name,
+      score: formValues.score,
+      order_no: order ? order + 1 : 1
+    };
+    console.log(`🚀🚀 ~~ addRubric ~~ body`, body);
+
+    try {
+      // await createRubric(body);
+      setOpen(false);
+      getSurvey();
+    } catch (error) {
+      console.log(`🚀🚀🚀🚀🚀🚀🚀🚀🚀error`, error?.response?.data);
+    }
+  };
+
+  useEffect(() => {
+    if (Object.keys(formErrors).length === 0) {
+      addRubric();
+    }
+  }, [formErrors]);
+
+  const getSurvey = async () => {
+    const res = await getAllSurvey(id);
+    console.log(`🚀🚀🚀🚀🚀🚀 ~~  ~~ res`, res);
+    setData(res?.response_body);
+  };
+
+  useEffect(() => {
+    getSurvey();
+  }, []);
 
   return (
-    <Container dir={lang === "arabic" && "rtl"}>
+    <Container dir={lang === "arabic" ? "rtl" : undefined}>
       <Create>
         <AddCircleIcon />
-        <p onClick={() => navigate("/create-school")}>
+        <p onClick={() => navigate("/create-survey")}>
           Create New Survey
         </p>
       </Create>
-      <TableContainer component={Paper}>
-        <Table sx={{ minWidth: 650 }} aria-label='simple table'>
-          <TableHead>
-            <TableRow
-              sx={{
-                th: {
-                  fontWeight: 600,
-                  borderRight: 1,
-                  borderColor: "lightgray"
-                }
-              }}
-            >
-              {herders.map((row) => (
-                <TableCell
-                  sx={{ borderRight: 1, borderColor: "lightgray" }}
-                  align='center'
-                >
-                  {row}
-                </TableCell>
-              ))}
-
-              <TableCell
-                sx={{ borderRight: 1, borderColor: "lightgray" }}
-                align='center'
-              >
-                Edit
-              </TableCell>
-              <TableCell
-                sx={{ borderRight: 1, borderColor: "lightgray" }}
-                align='center'
-              >
-                Delete
-              </TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {herders.map((row) => (
-              <TableRow key={row.name}>
-                <TableCell
-                  sx={{ borderRight: 1, borderColor: "lightgray" }}
-                  align='center'
-                >
-                  {row}
-                </TableCell>
-
-                <TableCell
-                  sx={{ borderRight: 1, borderColor: "lightgray" }}
-                  align='center'
-                >
-                  <Checkbox />
-                  Management
-                  <Checkbox />
-                  Teacher
-                  <Checkbox />
-                  Parent
-                  <Checkbox />
-                  Student
-                </TableCell>
-
-                <TableCell
-                  style={{ width: 50 }}
-                  sx={{ borderRight: 1, borderColor: "lightgray" }}
-                  align='center'
-                >
-                  <TdEdit>
-                    <Edit />
-                  </TdEdit>
-                </TableCell>
-                <TableCell
-                  style={{ width: 50 }}
-                  sx={{ borderRight: 1, borderColor: "lightgray" }}
-                  align='center'
-                >
-                  <TdDelete>
-                    <Delete />
-                  </TdDelete>
-                </TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
+      <SurveyTable data={data} handleNavigate={handleNavigate} />
     </Container>
   );
 }

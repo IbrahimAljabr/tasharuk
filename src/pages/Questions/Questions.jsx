@@ -59,7 +59,7 @@ function Questions({ lang }) {
   };
 
   return (
-    <Container dir={lang === "arabic" && "rtl"}>
+    <Container dir={lang === "arabic" ? "rtl" : undefined}>
       <DateText>20:00</DateText>
 
       <QuestionsText>

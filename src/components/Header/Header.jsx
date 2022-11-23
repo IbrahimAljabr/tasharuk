@@ -42,9 +42,7 @@ function Header() {
             </NavBarList>
           </NavBarText>
           <BlackNavBar active={pathname === "/school-management"}>
-            <li onClick={() => navigate("/school-management")}>
-              Schools
-            </li>
+            <li onClick={() => navigate("/schema")}>Schema</li>
             <li onClick={() => navigate("/create-survey")}>
               Survey Module
             </li>

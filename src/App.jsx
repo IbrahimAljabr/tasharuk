@@ -34,7 +34,7 @@ function App() {
                     <Header />
                     <Component
                       lang={lang}
-                      dir={lang === "arabic" && "rtl"}
+                      dir={lang === "arabic" ? "rtl" : undefined}
                     />
                   </>
                 )

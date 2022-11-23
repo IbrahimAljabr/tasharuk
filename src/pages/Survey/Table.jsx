@@ -6,13 +6,9 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import React from "react";
-import { TdDelete, TdEdit } from "./table.style";
 
-import { ReactComponent as Delete } from "../../assets/icons/delete.svg";
-import { ReactComponent as Edit } from "../../assets/icons/edit.svg";
-
-function TableShare({ data, columns }) {
-  console.log(`🚀🚀 ~~ TableShare ~~ data`, data);
+function SurveyTable({ data, handleNavigate }) {
+  console.log(`🚀🚀 ~~ SurveyTable ~~ data`, data);
   return (
     <TableContainer component={Paper} sx={{ marginBottom: 15 }}>
       <Table sx={{ minWidth: 650 }} aria-label='simple table'>
@@ -26,62 +22,78 @@ function TableShare({ data, columns }) {
               }
             }}
           >
-            {columns.map((row) => (
-              <TableCell
-                key={row}
-                sx={{ borderRight: 1, borderColor: "lightgray" }}
-                align='center'
-              >
-                {row?.header}
-              </TableCell>
-            ))}
+            <TableCell
+              sx={{
+                borderRight: 1,
+                borderColor: "lightgray"
+              }}
+              align='center'
+            >
+              Schema Name
+            </TableCell>
 
             <TableCell
-              sx={{ borderRight: 1, borderColor: "lightgray" }}
+              sx={{
+                borderRight: 1,
+                borderColor: "lightgray"
+              }}
               align='center'
+              style={{ width: 180 }}
             >
-              Edit
+              Start Date
             </TableCell>
+
             <TableCell
-              sx={{ borderRight: 1, borderColor: "lightgray" }}
+              sx={{
+                borderRight: 1,
+                borderColor: "lightgray"
+              }}
+              align='center'
+              style={{ width: 180 }}
+            >
+              End Date
+            </TableCell>
+
+            <TableCell
+              sx={{
+                borderRight: 1,
+                borderColor: "lightgray"
+              }}
               align='center'
             >
-              Delete
+              Status
             </TableCell>
           </TableRow>
         </TableHead>
 
         <TableBody>
           {data?.map((row) => (
-            <TableRow key={row}>
-              {columns.map((cal) => (
-                <TableCell
-                  sx={{ borderRight: 1, borderColor: "lightgray" }}
-                  align='center'
-                  key={row}
-                >
-                  {row[cal.field]}
-                </TableCell>
-              ))}
+            <TableRow key={row?.id}>
+              <TableCell
+                sx={{ borderRight: 1, borderColor: "lightgray" }}
+                align='center'
+              >
+                {row?.capability_name_en}
+              </TableCell>
 
               <TableCell
                 sx={{ borderRight: 1, borderColor: "lightgray" }}
-                style={{ width: 50 }}
                 align='center'
               >
-                <TdEdit>
-                  <Edit />
-                </TdEdit>
+                {row?.capability_name_en}
               </TableCell>
+
               <TableCell
                 sx={{ borderRight: 1, borderColor: "lightgray" }}
-                style={{ width: 50 }}
                 align='center'
               >
-                <TdDelete>
-                  <Delete />
-                </TdDelete>
+                {row?.capability_name_en}
               </TableCell>
+
+              <TableCell
+                sx={{ borderRight: 1, borderColor: "lightgray" }}
+                align='center'
+              ></TableCell>
             </TableRow>
           ))}
         </TableBody>
@@ -90,4 +102,4 @@ function TableShare({ data, columns }) {
   );
 }
 
-export default TableShare;
+export default SurveyTable;

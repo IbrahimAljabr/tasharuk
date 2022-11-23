@@ -1,13 +1,6 @@
 import AddCircleIcon from "@mui/icons-material/AddCircle";
 import Container from "@mui/material/Container";
-import Paper from "@mui/material/Paper";
-import Table from "@mui/material/Table";
-import TableBody from "@mui/material/TableBody";
-import TableCell from "@mui/material/TableCell";
-import TableContainer from "@mui/material/TableContainer";
-import TableHead from "@mui/material/TableHead";
-import TableRow from "@mui/material/TableRow";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Create,
   CreateContainer,
@@ -19,24 +12,155 @@ import {
 } from "../Capabilities/capabilities.style";
 
 import Modal from "@mui/material/Modal";
-import { ReactComponent as Delete } from "../../assets/icons/delete.svg";
-import { ReactComponent as Edit } from "../../assets/icons/edit.svg";
-import { TdDelete, TdEdit } from "../../components/Table/table.style";
+import { useLocation, useNavigate } from "react-router-dom";
+import {
+  createRubric,
+  deleteRubrics,
+  editRubric,
+  getAllRubricById
+} from "../../services/rubrics";
+import { ErrorText } from "../CreateSchool/create-school.style";
+import RubricTable from "./Table";
 
 function Rubric({ lang }) {
   const [open, setOpen] = useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
-  const herders = ["school Name", "Country", "Contract person"];
+
+  const navigate = useNavigate();
+
+  const id = useLocation()?.state?.id;
+
+  const value = {
+    description: "",
+    name: "",
+    score: ""
+  };
+
+  const [data, setData] = useState([]);
+  const [formValues, setFormValues] = useState(value);
+  const [formErrors, setFormErrors] = useState(value);
+  const [edit, setEdit] = useState(false);
+  const [editId, setEditId] = useState(0);
+
+  const handleEditCapability = async (event) => {
+    event.preventDefault();
+
+    const body = {
+      description_en: formValues.description,
+      name_en: formValues.name,
+      score: formValues.score
+    };
+
+    try {
+      await editRubric(editId, body);
+      getRubric();
+      setOpen(false);
+      setEdit(false);
+      setFormValues(value);
+    } catch (error) {
+      console.log(`🚀🚀 ~~ edit `, error);
+    }
+  };
+
+  const handleEdit = async (body) => {
+    setEdit(true);
+    setOpen(true);
+    setFormValues({
+      ...formValues,
+      name: body?.name_en,
+      description_en: body?.description_en,
+      score: body?.score
+    });
+    setEditId(body?.id);
+  };
+
+  const handleChange = (event) => {
+    const { name, value } = event.target;
+    setFormValues({ ...formValues, [name]: value });
+  };
+
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    setFormErrors(validate(formValues));
+  };
+
+  const validate = (value) => {
+    const errors = {};
+
+    if (!value.name) {
+      errors.name = "Name Is Required";
+    }
+
+    if (!value.description) {
+      errors.description = "Description Is Required";
+    }
+
+    if (!value.score) {
+      errors.score = "Score Is Required";
+    }
+
+    return errors;
+  };
+
+  const handleNavigate = async (id) => {
+    navigate(`/indicator/${id}`, { state: { id } });
+  };
+
+  let order = data.reduce((acc, value) => {
+    return (acc = acc > value.order_no ? acc : value.order_no);
+  }, 0);
+
+  const addRubric = async () => {
+    const body = {
+      indicator_id: id,
+      description_en: formValues.description,
+      name_en: formValues.name,
+      score: formValues.score,
+      order_no: order ? order + 1 : 1
+    };
+
+    try {
+      await createRubric(body);
+      setOpen(false);
+      getRubric();
+    } catch (error) {
+      console.log(`🚀🚀🚀🚀🚀🚀🚀🚀🚀error`, error?.response?.data);
+    }
+  };
+
+  const handleDelete = async (id) => {
+    try {
+      await deleteRubrics(id);
+      getRubric();
+    } catch (error) {
+      console.log(`🚀🚀 ~~ handleDelete ~~ error`, error);
+    }
+  };
+
+  useEffect(() => {
+    if (Object.keys(formErrors).length === 0) {
+      addRubric();
+    }
+  }, [formErrors]);
+
+  const getRubric = async () => {
+    const res = await getAllRubricById(id);
+    setData(res?.response_body);
+  };
+
+  useEffect(() => {
+    getRubric();
+  }, []);
 
   return (
-    <Container dir={lang === "arabic" && "rtl"}>
+    <Container dir={lang === "arabic" ? "rtl" : undefined}>
       <CreateContainer>
         <Create>
           <AddCircleIcon />
-          <p onClick={handleOpen}>Create School</p>
+          <p onClick={handleOpen}>Create Rubric</p>
         </Create>
-        <h1>capabilities</h1>
+        {/* <h1>capabilities</h1> */}
         <Modal
           open={open}
           onClose={handleClose}
@@ -47,7 +171,7 @@ function Rubric({ lang }) {
           <ModelContainer>
             <ModelHeader>
               <AddCircleIcon />
-              <p>Create Sub-Capability</p>
+              {edit ? <p>Edit Rubric</p> : <p>Create Rubric</p>}
             </ModelHeader>
 
             <ModelBody>
@@ -55,16 +179,48 @@ function Rubric({ lang }) {
                 <ModelSwitch>
                   <p>Rubric Name</p>
                 </ModelSwitch>
-                <input type='text' required />
+                <div>
+                  <input
+                    type='text'
+                    required
+                    name='name'
+                    onChange={handleChange}
+                    value={formValues?.name}
+                  />
+                  <ErrorText>{formErrors.name}</ErrorText>
+                </div>
                 <ModelSwitch>
                   <p>Rubric Description</p>
                 </ModelSwitch>
-                <textarea type='text' required />
+                <div>
+                  <textarea
+                    type='text'
+                    required
+                    name='description'
+                    onChange={handleChange}
+                    value={formValues?.description}
+                  />
+                  <ErrorText>{formErrors.description}</ErrorText>
+                </div>
                 <ModelSwitch>
                   <p>Rubric Score</p>
                 </ModelSwitch>
-                <input type='text' required />
-                <ModelButton>Add Capability</ModelButton>
+                <div>
+                  <input
+                    type='text'
+                    required
+                    name='score'
+                    onChange={handleChange}
+                    value={formValues?.score}
+                  />
+                  <ErrorText>{formErrors.score}</ErrorText>
+                </div>
+                <ModelButton
+                  type='submit'
+                  onClick={edit ? handleEditCapability : handleSubmit}
+                >
+                  {edit ? <>Edit Rubric</> : <>Add Rubric</>}
+                </ModelButton>
                 <ModelButton onClick={handleClose} cancel='true'>
                   Cancel
                 </ModelButton>
@@ -73,74 +229,12 @@ function Rubric({ lang }) {
           </ModelContainer>
         </Modal>
       </CreateContainer>
-      <TableContainer component={Paper}>
-        <Table sx={{ minWidth: 650 }} aria-label='simple table'>
-          <TableHead>
-            <TableRow
-              sx={{
-                th: {
-                  fontWeight: 600,
-                  borderRight: 1,
-                  borderColor: "lightgray"
-                }
-              }}
-            >
-              {herders.map((row) => (
-                <TableCell
-                  sx={{ borderRight: 1, borderColor: "lightgray" }}
-                  align='center'
-                >
-                  {row}
-                </TableCell>
-              ))}
-              <TableCell
-                sx={{ borderRight: 1, borderColor: "lightgray" }}
-                align='center'
-              >
-                Edit
-              </TableCell>
-              <TableCell
-                sx={{ borderRight: 1, borderColor: "lightgray" }}
-                align='center'
-              >
-                Delete
-              </TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {herders.map((row) => (
-              <TableRow>
-                {herders.map((row) => (
-                  <TableCell
-                    sx={{ borderRight: 1, borderColor: "lightgray" }}
-                    align='center'
-                  >
-                    {row}
-                  </TableCell>
-                ))}
-                <TableCell
-                  style={{ width: 50 }}
-                  sx={{ borderRight: 1, borderColor: "lightgray" }}
-                  align='center'
-                >
-                  <TdEdit>
-                    <Edit />
-                  </TdEdit>
-                </TableCell>
-                <TableCell
-                  style={{ width: 50 }}
-                  sx={{ borderRight: 1, borderColor: "lightgray" }}
-                  align='center'
-                >
-                  <TdDelete>
-                    <Delete />
-                  </TdDelete>
-                </TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
+      <RubricTable
+        data={data}
+        handleNavigate={handleNavigate}
+        handleDelete={handleDelete}
+        handleEdit={handleEdit}
+      />
     </Container>
   );
 }
