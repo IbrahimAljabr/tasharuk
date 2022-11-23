@@ -2,9 +2,6 @@ import axios from "axios";
 
 const { REACT_APP_API_URL } = process.env;
 
-const userName = localStorage.getItem("userName");
-const password = localStorage.getItem("password");
-
 /**
  * Login user.
  *
@@ -17,8 +14,8 @@ export const login = async ({ uname, pass }) => {
     {},
     {
       auth: {
-        username: userName,
-        password: password
+        username: uname,
+        password: pass
       }
     }
   );

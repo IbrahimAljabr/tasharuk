@@ -43,8 +43,6 @@ export default function Login() {
 
     if (password.length > 1 && userName.length > 1) {
       try {
-        localStorage.setItem("userName", userName);
-        localStorage.setItem("password", password);
         const data = await login(userName, password);
         console.log(`🚀🚀 🚀🚀🚀🚀🚀🚀`, data);
       } catch (error) {
