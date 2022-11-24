@@ -1,3 +1,4 @@
+import { TextField } from "@mui/material";
 import Select from "@mui/material/Select";
 import styled from "styled-components";
 
@@ -14,9 +15,10 @@ export const OutLineButton = styled.button`
   background-color: white;
   margin: 0 2rem 0 0;
   border: 1px solid gray;
-  border-radius: 1rem;
+  border-radius: 0.8rem;
   height: 2rem;
   cursor: pointer;
+  max-width: 10rem;
 `;
 
 export const FormContainer = styled.div`
@@ -48,7 +50,31 @@ export const Form = styled.div`
   }
 `;
 
+export const SurveyForm = styled.div`
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  background-color: #f8f8f8;
+  padding: 2rem;
+  border-radius: 0.3rem;
+  box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+  width: 40rem;
+
+  input {
+    background-color: white;
+  }
+  div {
+    width: 100%;
+    align-items: center;
+  }
+`;
+
 export const SelectInput = styled(Select)`
-  width: 10rem;
+  width: 15rem;
+  background-color: white;
+`;
+
+export const TextInput = styled(TextField)`
+  width: 15rem;
   background-color: white;
 `;

@@ -77,11 +77,9 @@ function RubricTable({
               <TableCell
                 sx={{
                   borderRight: 1,
-                  borderColor: "lightgray",
-                  cursor: "pointer"
+                  borderColor: "lightgray"
                 }}
                 align='center'
-                onClick={() => handleNavigate(row?.id)}
               >
                 {row?.name_en}
               </TableCell>

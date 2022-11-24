@@ -1,8 +1,9 @@
 import { FormControl, InputLabel, MenuItem } from "@mui/material";
 import Container from "@mui/material/Container";
-import TextField from "@mui/material/TextField";
+import cookie from "cookiejs";
 import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
+import Snackbars from "../../components/SnackBar";
 import {
   addSchoolUser,
   getAllPositions
@@ -11,13 +12,17 @@ import {
   ErrorText,
   Form,
   FormContainer,
-  SelectInput
+  SelectInput,
+  SubContainer,
+  TextInput
 } from "../CreateSchool/create-school.style";
 import { AddContainer, OutLineButton } from "./add-school-students";
 
 function AddSchoolStudents({ lang }) {
   const navigate = useNavigate();
-  const companyId = useLocation()?.state?.id;
+  const companyId = useLocation()?.state?.row?.company_register_id;
+  console.log(`🚀🚀 ~~ AddSchoolStudents ~~ companyId`, companyId);
+  const auth = cookie.get("auth");
 
   const initialValue = {
     firstName: "",
@@ -31,6 +36,11 @@ function AddSchoolStudents({ lang }) {
   const [formValues, setFormValues] = useState(initialValue);
   const [formErrors, setFormErrors] = useState(initialValue);
   const [positions, setPositions] = useState([]);
+  const [snack, setSnack] = useState({
+    open: false,
+    type: "success",
+    message: ""
+  });
 
   const handleChange = (event) => {
     const { name, value } = event.target;
@@ -96,10 +106,25 @@ function AddSchoolStudents({ lang }) {
     };
 
     try {
-      await addSchoolUser(body);
-      navigate("/school-management");
+      const user = await addSchoolUser(body);
+      setFormValues(initialValue);
+      setFormErrors(initialValue);
+      setSnack({
+        ...snack,
+        open: true,
+        message: "User added successfully",
+        type: "success"
+      });
+      navigate(`/survey`, {
+        state: { user: user?.response_body?.id }
+      });
     } catch (error) {
-      console.log(`🚀🚀 ~~ addStudents ~~ error`, error);
+      setSnack({
+        ...snack,
+        open: true,
+        message: error?.response?.data?.error_message,
+        type: "error"
+      });
     }
   };
 
@@ -115,15 +140,26 @@ function AddSchoolStudents({ lang }) {
   }, [formErrors]);
 
   useEffect(() => {
-    getPositions();
+    if (auth) {
+      getPositions();
+    } else {
+      navigate("/");
+    }
   }, []);
 
   return (
     <Container dir={lang === "arabic" ? "rtl" : undefined}>
+      <SubContainer>
+        <h2>Add Users</h2>
+        {/* <OutLineButton onClick={() => navigate("/survey")}>
+          Survey
+        </OutLineButton> */}
+      </SubContainer>
       <FormContainer>
         <Form>
           <div>
-            <TextField
+            <TextInput
+              autoComplete='off'
               onChange={handleChange}
               value={formValues.firstName}
               id='outlined-basic'
@@ -134,7 +170,8 @@ function AddSchoolStudents({ lang }) {
             <ErrorText>{formErrors.firstName}</ErrorText>
           </div>
           <div>
-            <TextField
+            <TextInput
+              autoComplete='off'
               onChange={handleChange}
               value={formValues.lastName}
               id='outlined-basic'
@@ -160,12 +197,13 @@ function AddSchoolStudents({ lang }) {
                 ))}
               </SelectInput>
 
-              <ErrorText>{formErrors.country}</ErrorText>
+              <ErrorText>{formErrors.position}</ErrorText>
             </FormControl>
           </div>
 
           <div>
-            <TextField
+            <TextInput
+              autoComplete='off'
               id='outlined-basic'
               label='Phone Number'
               variant='outlined'
@@ -176,7 +214,8 @@ function AddSchoolStudents({ lang }) {
             <ErrorText>{formErrors.phoneNumber}</ErrorText>
           </div>
           <div>
-            <TextField
+            <TextInput
+              autoComplete='off'
               id='outlined-basic'
               label='Email'
               variant='outlined'
@@ -187,11 +226,13 @@ function AddSchoolStudents({ lang }) {
             <ErrorText>{formErrors.email}</ErrorText>
           </div>
           <div>
-            <TextField
+            <TextInput
+              autoComplete='off'
               id='outlined-basic'
               label='Password'
               variant='outlined'
               name='password'
+              type='password'
               value={formValues.password}
               onChange={handleChange}
             />
@@ -209,6 +250,7 @@ function AddSchoolStudents({ lang }) {
           </AddContainer>
         </Form>
       </FormContainer>
+      <Snackbars setOpen={setSnack} type={snack} />
     </Container>
   );
 }

@@ -1,8 +1,9 @@
 import { FormControl, InputLabel, MenuItem } from "@mui/material";
 import Container from "@mui/material/Container";
-import TextField from "@mui/material/TextField";
+import cookie from "cookiejs";
 import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
+import Snackbars from "../../components/SnackBar";
 import {
   createSchool,
   editSchool,
@@ -14,12 +15,14 @@ import {
   FormContainer,
   OutLineButton,
   SelectInput,
-  SubContainer
+  SubContainer,
+  TextInput
 } from "./create-school.style";
 
 function CreateSchool({ lang }) {
   const navigate = useNavigate();
   const oldData = useLocation().state;
+  const auth = cookie.get("auth");
 
   const initialValue = {
     schoolName: "",
@@ -35,6 +38,11 @@ function CreateSchool({ lang }) {
   const [formValues, setFormValues] = useState(initialValue);
   const [formErrors, setFormErrors] = useState(initialValue);
   const [countries, setCountries] = useState([]);
+  const [snack, setSnack] = useState({
+    open: false,
+    type: "success",
+    message: ""
+  });
 
   const validate = (value) => {
     const errors = {};
@@ -96,21 +104,32 @@ function CreateSchool({ lang }) {
   const handleEdit = async (event) => {
     event.preventDefault();
 
-    await editSchool(body);
-    navigate(`/school-management`);
+    try {
+      const data = await editSchool(body);
+      const id = data?.response_body?.company_register_id;
+      navigate(`/add-school-students/${id}`, { state: { id } });
+    } catch (error) {
+      setSnack({
+        ...snack,
+        open: true,
+        message: error?.response?.data?.error_message,
+        type: "error"
+      });
+    }
   };
 
   const createNewSchool = async () => {
     try {
       const data = await createSchool(body);
-      const id = data?.response_body?.company_register_id;
-      console.log(
-        `🚀🚀 ~~ createNewSchool ~~ data`,
-        data?.response_body?.company_register_id
-      );
-      navigate(`/add-school-students/${id}`, { state: { id } });
+      const row = data?.response_body;
+      navigate(`/add-school-students/${row.id}`, { state: { row } });
     } catch (error) {
-      console.log(`🚀🚀 ~~ createNewSchool ~~ error`, error);
+      setSnack({
+        ...snack,
+        open: true,
+        message: error?.response?.data?.error_message,
+        type: "error"
+      });
     }
   };
 
@@ -143,24 +162,28 @@ function CreateSchool({ lang }) {
   };
 
   useEffect(() => {
-    getCountries();
-    editDate();
+    if (auth) {
+      getCountries();
+      editDate();
+    } else {
+      navigate("/");
+    }
   }, []);
 
   return (
     <Container dir={lang === "arabic" ? "rtl" : undefined}>
       <SubContainer>
-        <OutLineButton onClick={() => navigate("/survey")}>
-          Add Users
-        </OutLineButton>
+        <h2>Add School</h2>
+        {/* <h2>Add Users</h2>
         <OutLineButton onClick={() => navigate("/survey")}>
           Survey
-        </OutLineButton>
+        </OutLineButton> */}
       </SubContainer>
       <FormContainer>
         <Form>
           <div>
-            <TextField
+            <TextInput
+              autoComplete='off'
               onChange={handleChange}
               value={formValues.schoolName}
               label='School Name'
@@ -170,7 +193,8 @@ function CreateSchool({ lang }) {
             <ErrorText>{formErrors.schoolName}</ErrorText>
           </div>
           <div>
-            <TextField
+            <TextInput
+              autoComplete='off'
               label='Contract Person'
               variant='outlined'
               name='contractPerson'
@@ -180,7 +204,8 @@ function CreateSchool({ lang }) {
             <ErrorText>{formErrors.contractPerson}</ErrorText>
           </div>
           <div>
-            <TextField
+            <TextInput
+              autoComplete='off'
               label='Number of Students'
               variant='outlined'
               name='numberOfStudents'
@@ -190,7 +215,8 @@ function CreateSchool({ lang }) {
             <ErrorText>{formErrors.numberOfStudents}</ErrorText>
           </div>
           <div>
-            <TextField
+            <TextInput
+              autoComplete='off'
               label='Phone Number'
               variant='outlined'
               name='phoneNumber'
@@ -200,7 +226,8 @@ function CreateSchool({ lang }) {
             <ErrorText>{formErrors.phoneNumber}</ErrorText>
           </div>
           <div>
-            <TextField
+            <TextInput
+              autoComplete='off'
               label='Number Of Teachers'
               variant='outlined'
               name='numberOfTeachers'
@@ -216,7 +243,6 @@ function CreateSchool({ lang }) {
                 label='Country'
                 onChange={handleChange}
                 name='country'
-                sx={{ width: 235 }}
               >
                 {countries?.map(
                   ({ country_code, country_name_en }) => (
@@ -232,7 +258,8 @@ function CreateSchool({ lang }) {
           </div>
 
           <div>
-            <TextField
+            <TextInput
+              autoComplete='off'
               label='Website'
               variant='outlined'
               name='website'
@@ -242,7 +269,8 @@ function CreateSchool({ lang }) {
             <ErrorText>{formErrors.website}</ErrorText>
           </div>
           <div>
-            <TextField
+            <TextInput
+              autoComplete='off'
               label='Company Register Number'
               variant='outlined'
               name='companyRegisterId'
@@ -260,6 +288,7 @@ function CreateSchool({ lang }) {
           </OutLineButton>
         </Form>
       </FormContainer>
+      <Snackbars setOpen={setSnack} type={snack} />
     </Container>
   );
 }

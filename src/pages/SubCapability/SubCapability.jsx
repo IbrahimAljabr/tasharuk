@@ -1,8 +1,10 @@
 import AddCircleIcon from "@mui/icons-material/AddCircle";
 import Container from "@mui/material/Container";
 import Modal from "@mui/material/Modal";
+import cookie from "cookiejs";
 import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
+import Snackbars from "../../components/SnackBar";
 import {
   createSubCapability,
   deleteSubCapability,
@@ -33,6 +35,12 @@ function SubCapability({ lang }) {
   const [formErrors, setFormErrors] = useState({ name: "" });
   const [edit, setEdit] = useState(false);
   const [editId, setEditId] = useState(0);
+  const auth = cookie.get("auth");
+  const [snack, setSnack] = useState({
+    open: false,
+    type: "success",
+    message: ""
+  });
 
   const handleChange = (event) => {
     const { name, value } = event.target;
@@ -69,8 +77,19 @@ function SubCapability({ lang }) {
       setOpen(false);
       setEdit(false);
       setFormValues({ name: "" });
+      setSnack({
+        ...snack,
+        open: true,
+        message: "Edited Successfully ",
+        type: "success"
+      });
     } catch (error) {
-      console.log(`🚀🚀 ~~ edit `, error);
+      setSnack({
+        ...snack,
+        open: true,
+        message: error?.response?.data?.error_message,
+        type: "error"
+      });
     }
   };
 
@@ -107,8 +126,19 @@ function SubCapability({ lang }) {
       console.log(`🚀🚀🚀🚀  res`, res);
       setOpen(false);
       getSubCapability();
+      setSnack({
+        ...snack,
+        open: true,
+        message: "Added Successfully ",
+        type: "success"
+      });
     } catch (error) {
-      console.log(`🚀🚀🚀🚀🚀🚀🚀🚀🚀error`, error?.response?.data);
+      setSnack({
+        ...snack,
+        open: true,
+        message: error?.response?.data?.error_message,
+        type: "error"
+      });
     }
   };
 
@@ -116,20 +146,35 @@ function SubCapability({ lang }) {
     try {
       await deleteSubCapability(id);
       getSubCapability();
+      setSnack({
+        ...snack,
+        open: true,
+        message: "Deleted Successfully ",
+        type: "success"
+      });
     } catch (error) {
-      console.log(`🚀🚀 ~~ handleDelete ~~ error`, error);
+      setSnack({
+        ...snack,
+        open: true,
+        message: error?.response?.data?.error_message,
+        type: "error"
+      });
     }
   };
-
-  useEffect(() => {
-    getSubCapability();
-  }, []);
 
   useEffect(() => {
     if (Object.keys(formErrors).length === 0) {
       addSubCapabilities();
     }
   }, [formErrors]);
+
+  useEffect(() => {
+    if (auth) {
+      getSubCapability();
+    } else {
+      navigate("/");
+    }
+  }, []);
 
   return (
     <Container dir={lang === "arabic" ? "rtl" : undefined}>
@@ -165,6 +210,7 @@ function SubCapability({ lang }) {
                     name='name'
                     onChange={handleChange}
                     value={formValues?.name}
+                    autoComplete='off'
                   />
                   <ErrorText>{formErrors.name}</ErrorText>
                 </div>
@@ -186,6 +232,8 @@ function SubCapability({ lang }) {
           </ModelContainer>
         </Modal>
       </Create>
+      <Snackbars setOpen={setSnack} type={snack} />
+
       <SubCapabilityTable
         data={data}
         handleNavigate={handleNavigate}

@@ -1,5 +1,6 @@
 import AddCircleIcon from "@mui/icons-material/AddCircle";
 import Container from "@mui/material/Container";
+import cookie from "cookiejs";
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useSchool } from "../../contexts/UserContext";
@@ -11,15 +12,19 @@ import SchoolTable from "./Table";
 function SchoolManagement({ lang }) {
   const navigate = useNavigate();
   const [data, setData] = useState([]);
-  const { schoolData, setSchoolData } = useSchool();
-
+  const { setSchoolData } = useSchool();
+  const auth = cookie.get("auth");
   const getAllSchools = async () => {
     const res = await getSchools();
     setData(res?.response_body);
   };
 
   useEffect(() => {
-    getAllSchools();
+    if (auth) {
+      getAllSchools();
+    } else {
+      navigate("/");
+    }
   }, []);
 
   return (

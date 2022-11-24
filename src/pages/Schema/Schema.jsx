@@ -1,5 +1,6 @@
 import AddCircleIcon from "@mui/icons-material/AddCircle";
 import Container from "@mui/material/Container";
+import cookie from "cookiejs";
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
@@ -19,6 +20,7 @@ function Schema({ lang }) {
 
   const [data, setData] = useState([]);
   const navigate = useNavigate();
+  const auth = cookie.get("auth");
 
   const initialValue = {
     name: "",
@@ -116,14 +118,18 @@ function Schema({ lang }) {
   };
 
   useEffect(() => {
-    getSchema();
-  }, []);
-
-  useEffect(() => {
     if (Object.keys(formErrors).length === 0) {
       addSchema();
     }
   }, [formErrors]);
+
+  useEffect(() => {
+    if (auth) {
+      getSchema();
+    } else {
+      navigate("/");
+    }
+  }, []);
 
   return (
     <Container dir={lang === "arabic" ? "rtl" : undefined}>

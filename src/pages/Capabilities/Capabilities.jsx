@@ -1,7 +1,9 @@
 import AddCircleIcon from "@mui/icons-material/AddCircle";
 import Container from "@mui/material/Container";
+import cookie from "cookiejs";
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import Snackbars from "../../components/SnackBar";
 import {
   createCapabilities,
   deleteCapability,
@@ -23,11 +25,17 @@ function Capabilities({ lang }) {
   const [formErrors, setFormErrors] = useState({ name: "" });
   const [edit, setEdit] = useState(false);
   const [editId, setEditId] = useState(0);
+  const [snack, setSnack] = useState({
+    open: false,
+    type: "success",
+    message: ""
+  });
 
   const handleChange = (event) => {
     const { name, value } = event.target;
     setFormValues({ ...formValues, [name]: value });
   };
+  const auth = cookie.get("auth");
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -57,11 +65,21 @@ function Capabilities({ lang }) {
     };
 
     try {
-      const res = await createCapabilities(body);
-      console.log(`🚀🚀🚀🚀  res`, res);
+      await createCapabilities(body);
       setOpen(false);
+      setSnack({
+        ...snack,
+        open: true,
+        message: "Add Successfully ",
+        type: "success"
+      });
     } catch (error) {
-      console.log(`🚀🚀🚀🚀error`, error?.response?.data);
+      setSnack({
+        ...snack,
+        open: true,
+        message: error?.response?.data?.error_message,
+        type: "error"
+      });
     }
   };
 
@@ -80,8 +98,19 @@ function Capabilities({ lang }) {
     try {
       await deleteCapability(id);
       getCapabilities();
+      setSnack({
+        ...snack,
+        open: true,
+        message: "Deleted Successfully ",
+        type: "success"
+      });
     } catch (error) {
-      console.log(`🚀🚀 ~~ handleDelete ~~ error`, error);
+      setSnack({
+        ...snack,
+        open: true,
+        message: error?.response?.data?.error_message,
+        type: "error"
+      });
     }
   };
 
@@ -93,19 +122,28 @@ function Capabilities({ lang }) {
     };
 
     try {
-      const res = await editCapability(editId, body);
-      console.log(`🚀🚀 ~~ handleEdit ~~ res`, res);
+      await editCapability(editId, body);
       getCapabilities();
       setOpen(false);
       setEdit(false);
       setFormValues({ name: "" });
+      setSnack({
+        ...snack,
+        open: true,
+        message: "Edited Successfully ",
+        type: "success"
+      });
     } catch (error) {
-      console.log(`🚀🚀 ~~ edit `, error);
+      setSnack({
+        ...snack,
+        open: true,
+        message: error?.response?.data?.error_message,
+        type: "error"
+      });
     }
   };
 
   const handleEdit = async (body) => {
-    console.log(`🚀🚀 ~~  body`, body);
     setEdit(true);
     setOpen(true);
     setFormValues({ ...formValues, name: body?.capability_name_en });
@@ -117,7 +155,11 @@ function Capabilities({ lang }) {
   };
 
   useEffect(() => {
-    getCapabilities();
+    if (auth) {
+      getCapabilities();
+    } else {
+      navigate("/");
+    }
   }, []);
 
   return (
@@ -149,6 +191,7 @@ function Capabilities({ lang }) {
         handleEdit={handleEdit}
         handleNavigate={handleNavigate}
       />
+      <Snackbars setOpen={setSnack} type={snack} />
     </Container>
   );
 }

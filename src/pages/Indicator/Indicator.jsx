@@ -1,8 +1,10 @@
 import AddCircleIcon from "@mui/icons-material/AddCircle";
 import Container from "@mui/material/Container";
 import Modal from "@mui/material/Modal";
+import cookie from "cookiejs";
 import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
+import Snackbars from "../../components/SnackBar";
 import {
   createIndicator,
   deleteIndicators,
@@ -27,12 +29,18 @@ function Indicator({ lang }) {
   const navigate = useNavigate();
 
   const id = useLocation()?.state?.id;
+  const auth = cookie.get("auth");
 
   const [data, setData] = useState([]);
   const [formValues, setFormValues] = useState({ description: "" });
   const [formErrors, setFormErrors] = useState({ description: "" });
   const [edit, setEdit] = useState(false);
   const [editId, setEditId] = useState(0);
+  const [snack, setSnack] = useState({
+    open: false,
+    type: "success",
+    message: ""
+  });
 
   const handleChange = (event) => {
     const { name, value } = event.target;
@@ -58,8 +66,19 @@ function Indicator({ lang }) {
       setOpen(false);
       setEdit(false);
       setFormValues({ description: "" });
+      setSnack({
+        ...snack,
+        open: true,
+        message: "Edited Successfully ",
+        type: "success"
+      });
     } catch (error) {
-      console.log(`🚀🚀 ~~ edit `, error);
+      setSnack({
+        ...snack,
+        open: true,
+        message: error?.response?.data?.error_message,
+        type: "error"
+      });
     }
   };
 
@@ -100,8 +119,19 @@ function Indicator({ lang }) {
       await createIndicator(body);
       setOpen(false);
       getIndicator();
+      setSnack({
+        ...snack,
+        open: true,
+        message: "Added Successfully ",
+        type: "success"
+      });
     } catch (error) {
-      console.log(`🚀🚀🚀🚀🚀🚀🚀🚀🚀error`, error?.response?.data);
+      setSnack({
+        ...snack,
+        open: true,
+        message: error?.response?.data?.error_message,
+        type: "error"
+      });
     }
   };
 
@@ -116,7 +146,12 @@ function Indicator({ lang }) {
       const res = await getAllIndicator(id);
       setData(res?.response_body);
     } catch (error) {
-      console.log(`🚀🚀🚀🚀🚀🚀🚀🚀🚀error`, error?.response?.data);
+      setSnack({
+        ...snack,
+        open: true,
+        message: error?.response?.data?.error_message,
+        type: "error"
+      });
     }
   };
 
@@ -124,13 +159,28 @@ function Indicator({ lang }) {
     try {
       await deleteIndicators(id);
       getIndicator();
+      setSnack({
+        ...snack,
+        open: true,
+        message: "Deleted Successfully ",
+        type: "success"
+      });
     } catch (error) {
-      console.log(`🚀🚀 ~~ handleDelete ~~ error`, error);
+      setSnack({
+        ...snack,
+        open: true,
+        message: error?.response?.data?.error_message,
+        type: "error"
+      });
     }
   };
 
   useEffect(() => {
-    getIndicator();
+    if (auth) {
+      getIndicator();
+    } else {
+      navigate("/");
+    }
   }, []);
 
   return (
@@ -185,6 +235,8 @@ function Indicator({ lang }) {
           </ModelContainer>
         </Modal>
       </Create>
+      <Snackbars setOpen={setSnack} type={snack} />
+
       <IndicatorTable
         data={data}
         handleNavigate={handleNavigate}

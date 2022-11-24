@@ -1,6 +1,8 @@
-import React, { useState } from "react";
-
+import cookie from "cookiejs";
+import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import loginImage from "../../assets/images/login.png";
+import Snackbars from "../../components/SnackBar";
 import { login } from "../../services/login";
 import {
   Button,
@@ -16,6 +18,13 @@ export default function Login() {
   const [password, setPassword] = useState("");
   const [userNameIsValid, setUserNameIsValid] = useState(true);
   const [passwordIsValid, setPasswordIsValid] = useState(true);
+  const [snack, setSnack] = useState({
+    open: false,
+    type: "success",
+    message: ""
+  });
+  const navigate = useNavigate();
+  const auth = cookie.get("auth");
 
   const handleUserNameChange = (e) => setUserName(e.target.value);
   const handlePasswordChange = (e) => setPassword(e.target.value);
@@ -43,16 +52,34 @@ export default function Login() {
 
     if (password.length > 1 && userName.length > 1) {
       try {
-        const data = await login(userName, password);
-        console.log(`🚀🚀 🚀🚀🚀🚀🚀🚀`, data);
+        await login(userName, password);
+
+        cookie("auth", "Authenticated");
+        setSnack({
+          ...snack,
+          open: true,
+          message: "Welcome",
+          type: "success"
+        });
+        navigate("/school-management");
       } catch (error) {
-        console.log(
-          `🚀🚀 ~~ handleSubmit ~~ error`,
-          error.response.data
-        );
+        setSnack({
+          ...snack,
+          open: true,
+          message: "Wrong User Name OR Password",
+          type: "error"
+        });
+
+        console.log(`🚀🚀 ~~ error`, error);
       }
     }
   };
+
+  useEffect(() => {
+    if (auth) {
+      navigate("/school-management");
+    }
+  }, []);
 
   return (
     <MainContainer>
@@ -73,6 +100,7 @@ export default function Login() {
               value={userName}
               onChange={handleUserNameChange}
               required
+              autoComplete='off'
             />
             {userNameIsValid ? (
               <Error />
@@ -96,6 +124,7 @@ export default function Login() {
           </div>
           <Button onClick={handleSubmit}>Sign In</Button>
         </Form>
+        <Snackbars setOpen={setSnack} type={snack} />
       </Container>
     </MainContainer>
   );

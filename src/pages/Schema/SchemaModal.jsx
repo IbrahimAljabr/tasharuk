@@ -49,6 +49,7 @@ function SchemaModal({
                 name='name'
                 onChange={handleChange}
                 value={formValues.name}
+                autoComplete='off'
               />
               <ErrorText>{formErrors.name}</ErrorText>
             </div>

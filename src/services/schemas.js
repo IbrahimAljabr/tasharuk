@@ -4,10 +4,25 @@ const { REACT_APP_API_URL } = process.env;
 
 axios.defaults.withCredentials = true;
 
-axios.defaults.withCredentials = true;
-
 export const getAllSchemas = async () => {
   const { data } = await axios.get(`${REACT_APP_API_URL}/schemas`);
+
+  return data;
+};
+
+export const getAllSchoolSchema = async () => {
+  const { data } = await axios.get(
+    `${REACT_APP_API_URL}/school-schemas`
+  );
+
+  return data;
+};
+
+export const addUserToSchema = async (body) => {
+  const { data } = await axios.post(
+    `${REACT_APP_API_URL}/schools`,
+    body
+  );
 
   return data;
 };

@@ -12,7 +12,9 @@ import {
 } from "../Capabilities/capabilities.style";
 
 import Modal from "@mui/material/Modal";
+import cookie from "cookiejs";
 import { useLocation, useNavigate } from "react-router-dom";
+import Snackbars from "../../components/SnackBar";
 import {
   createRubric,
   deleteRubrics,
@@ -42,6 +44,11 @@ function Rubric({ lang }) {
   const [formErrors, setFormErrors] = useState(value);
   const [edit, setEdit] = useState(false);
   const [editId, setEditId] = useState(0);
+  const [snack, setSnack] = useState({
+    open: false,
+    type: "success",
+    message: ""
+  });
 
   const handleEditCapability = async (event) => {
     event.preventDefault();
@@ -58,8 +65,19 @@ function Rubric({ lang }) {
       setOpen(false);
       setEdit(false);
       setFormValues(value);
+      setSnack({
+        ...snack,
+        open: true,
+        message: "Edited Successfully ",
+        type: "success"
+      });
     } catch (error) {
-      console.log(`🚀🚀 ~~ edit `, error);
+      setSnack({
+        ...snack,
+        open: true,
+        message: error?.response?.data?.error_message,
+        type: "error"
+      });
     }
   };
 
@@ -84,6 +102,7 @@ function Rubric({ lang }) {
     event.preventDefault();
     setFormErrors(validate(formValues));
   };
+  const auth = cookie.get("auth");
 
   const validate = (value) => {
     const errors = {};
@@ -124,8 +143,19 @@ function Rubric({ lang }) {
       await createRubric(body);
       setOpen(false);
       getRubric();
+      setSnack({
+        ...snack,
+        open: true,
+        message: "Added Successfully ",
+        type: "success"
+      });
     } catch (error) {
-      console.log(`🚀🚀🚀🚀🚀🚀🚀🚀🚀error`, error?.response?.data);
+      setSnack({
+        ...snack,
+        open: true,
+        message: error?.response?.data?.error_message,
+        type: "error"
+      });
     }
   };
 
@@ -133,8 +163,19 @@ function Rubric({ lang }) {
     try {
       await deleteRubrics(id);
       getRubric();
+      setSnack({
+        ...snack,
+        open: true,
+        message: "Deleted Successfully ",
+        type: "success"
+      });
     } catch (error) {
-      console.log(`🚀🚀 ~~ handleDelete ~~ error`, error);
+      setSnack({
+        ...snack,
+        open: true,
+        message: error?.response?.data?.error_message,
+        type: "error"
+      });
     }
   };
 
@@ -150,7 +191,11 @@ function Rubric({ lang }) {
   };
 
   useEffect(() => {
-    getRubric();
+    if (auth) {
+      getRubric();
+    } else {
+      navigate("/");
+    }
   }, []);
 
   return (
@@ -186,6 +231,7 @@ function Rubric({ lang }) {
                     name='name'
                     onChange={handleChange}
                     value={formValues?.name}
+                    autoComplete='off'
                   />
                   <ErrorText>{formErrors.name}</ErrorText>
                 </div>
@@ -229,6 +275,8 @@ function Rubric({ lang }) {
           </ModelContainer>
         </Modal>
       </CreateContainer>
+      <Snackbars setOpen={setSnack} type={snack} />
+
       <RubricTable
         data={data}
         handleNavigate={handleNavigate}

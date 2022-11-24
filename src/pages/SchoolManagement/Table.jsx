@@ -15,7 +15,7 @@ import { useSchool } from "../../contexts/UserContext";
 
 function SchoolTable({ data, handleDelete }) {
   console.log(`🚀🚀 ~~ SchoolTable ~~ data`, data);
-  const { schoolData, setSchoolData } = useSchool();
+  const { setSchoolData } = useSchool();
   const navigate = useNavigate();
   const header = [
     "School Name",
@@ -68,8 +68,21 @@ function SchoolTable({ data, handleDelete }) {
           {data?.map((row) => (
             <TableRow key={row?.company_register_id}>
               <TableCell
-                sx={{ borderRight: 1, borderColor: "lightgray" }}
+                sx={{
+                  borderRight: 1,
+                  borderColor: "lightgray",
+                  cursor: "pointer"
+                }}
                 align='center'
+                onClick={() => {
+                  setSchoolData(row);
+                  navigate(
+                    `/add-school-students/${row?.company_register_id}`,
+                    {
+                      state: { row }
+                    }
+                  );
+                }}
               >
                 {row?.school_name_en}
               </TableCell>

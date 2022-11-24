@@ -1,29 +1,38 @@
 import AddCircleIcon from "@mui/icons-material/AddCircle";
+import { FormControl, InputLabel, MenuItem } from "@mui/material";
 import Container from "@mui/material/Container";
+import cookie from "cookiejs";
 import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { getAllSurvey } from "../../services/survey";
+import Snackbars from "../../components/SnackBar";
+import {
+  addUserToSchema,
+  getAllSchoolSchema
+} from "../../services/schemas";
 import { Create } from "../Capabilities/capabilities.style";
-import SurveyTable from "./Table";
+import {
+  ErrorText,
+  FormContainer,
+  OutLineButton,
+  SelectInput,
+  SurveyForm
+} from "../CreateSchool/create-school.style";
 
 function Survey({ lang }) {
-  const [open, setOpen] = useState(false);
-  const handleOpen = () => setOpen(true);
-  const handleClose = () => setOpen(false);
-
   const navigate = useNavigate();
+  const auth = cookie.get("auth");
 
-  const id = useLocation()?.state?.id;
-
-  const value = {
-    description: "",
-    name: "",
-    score: ""
-  };
+  const id = useLocation()?.state?.user;
 
   const [data, setData] = useState([]);
-  const [formValues, setFormValues] = useState(value);
-  const [formErrors, setFormErrors] = useState(value);
+  console.log(`🚀🚀 ~~ Survey ~~ data`, data);
+  const [formValues, setFormValues] = useState({ schema: "" });
+  const [formErrors, setFormErrors] = useState({ schema: "" });
+  const [snack, setSnack] = useState({
+    open: false,
+    type: "success",
+    message: ""
+  });
 
   const handleChange = (event) => {
     const { name, value } = event.target;
@@ -38,73 +47,82 @@ function Survey({ lang }) {
   const validate = (value) => {
     const errors = {};
 
-    if (!value.name) {
-      errors.name = "Name Is Required";
-    }
-
-    if (!value.description) {
-      errors.description = "Description Is Required";
-    }
-
-    if (!value.score) {
-      errors.score = "Score Is Required";
+    if (!value.schema) {
+      errors.schema = "Schema Is Required";
     }
 
     return errors;
   };
 
-  const handleNavigate = async (id) => {
-    navigate(`/indicator/${id}`, { state: { id } });
-  };
-
-  let order = data.reduce((acc, value) => {
-    return (acc = acc > value.order_no ? acc : value.order_no);
-  }, 0);
-
-  const addRubric = async () => {
+  const addUser = async () => {
     const body = {
-      indicator_id: id,
-      description_en: formValues.description,
-      name_en: formValues.name,
-      score: formValues.score,
-      order_no: order ? order + 1 : 1
+      school_schemas_id: formValues?.schema,
+      school_users_id: id
     };
-    console.log(`🚀🚀 ~~ addRubric ~~ body`, body);
-
+    console.log(`🚀🚀 ~~ addUser ~~ body`, body);
     try {
-      // await createRubric(body);
-      setOpen(false);
-      getSurvey();
+      await addUserToSchema(body);
     } catch (error) {
-      console.log(`🚀🚀🚀🚀🚀🚀🚀🚀🚀error`, error?.response?.data);
+      setSnack({
+        ...snack,
+        open: true,
+        message: error?.response?.data?.error_message,
+        type: "error"
+      });
     }
   };
 
   useEffect(() => {
     if (Object.keys(formErrors).length === 0) {
-      addRubric();
+      addUser();
     }
   }, [formErrors]);
 
-  const getSurvey = async () => {
-    const res = await getAllSurvey(id);
-    console.log(`🚀🚀🚀🚀🚀🚀 ~~  ~~ res`, res);
+  const getSchoolSchema = async () => {
+    const res = await getAllSchoolSchema(id);
     setData(res?.response_body);
   };
 
   useEffect(() => {
-    getSurvey();
+    if (auth) {
+      getSchoolSchema();
+    } else {
+      navigate("/");
+    }
   }, []);
 
   return (
     <Container dir={lang === "arabic" ? "rtl" : undefined}>
       <Create>
         <AddCircleIcon />
-        <p onClick={() => navigate("/create-survey")}>
-          Create New Survey
-        </p>
+        <p>Create New Survey for user</p>
       </Create>
-      <SurveyTable data={data} handleNavigate={handleNavigate} />
+      <FormContainer>
+        <SurveyForm>
+          <p>Select Schema</p>
+          <div>
+            <FormControl>
+              <InputLabel>Schema</InputLabel>
+              <SelectInput
+                label='Schema'
+                onChange={handleChange}
+                name='schema'
+              >
+                {data?.map(({ id, schema }) => (
+                  <MenuItem key={schema.id} value={schema.id}>
+                    {schema.name_en}
+                  </MenuItem>
+                ))}
+              </SelectInput>
+
+              <ErrorText>{formErrors.schema}</ErrorText>
+            </FormControl>
+          </div>
+          <OutLineButton onClick={handleSubmit}>Add</OutLineButton>
+        </SurveyForm>
+      </FormContainer>
+
+      <Snackbars setOpen={setSnack} type={snack} />
     </Container>
   );
 }
