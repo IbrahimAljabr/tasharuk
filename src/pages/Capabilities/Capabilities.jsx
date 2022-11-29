@@ -2,13 +2,13 @@ import AddCircleIcon from "@mui/icons-material/AddCircle";
 import Container from "@mui/material/Container";
 import cookie from "cookiejs";
 import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import Snackbars from "../../components/SnackBar";
 import {
   createCapabilities,
   deleteCapability,
   editCapability,
-  getAllCapabilities
+  getAllCapability
 } from "../../services/capabilities";
 import { Create } from "./capabilities.style";
 import CapabilitiesModal from "./CapabilitiesModal";
@@ -21,8 +21,14 @@ function Capabilities({ lang }) {
   const navigate = useNavigate();
 
   const [data, setData] = useState([]);
-  const [formValues, setFormValues] = useState({ name: "" });
-  const [formErrors, setFormErrors] = useState({ name: "" });
+  const [formValues, setFormValues] = useState({
+    name: "",
+    description: ""
+  });
+  const [formErrors, setFormErrors] = useState({
+    name: "",
+    description: ""
+  });
   const [edit, setEdit] = useState(false);
   const [editId, setEditId] = useState(0);
   const [snack, setSnack] = useState({
@@ -30,6 +36,8 @@ function Capabilities({ lang }) {
     type: "success",
     message: ""
   });
+  const id = useLocation()?.state?.row;
+  console.log(`🚀🚀 ~~ Capabilities ~~ id`, id);
 
   const handleChange = (event) => {
     const { name, value } = event.target;
@@ -59,13 +67,14 @@ function Capabilities({ lang }) {
 
   const addCapabilities = async () => {
     const body = {
-      schema_id: 11,
+      schema_id: id,
       capability_name_en: formValues.name,
       order_no: order ? order + 1 : 1
     };
 
     try {
       await createCapabilities(body);
+      getCapabilities();
       setOpen(false);
       setSnack({
         ...snack,
@@ -73,6 +82,8 @@ function Capabilities({ lang }) {
         message: "Add Successfully ",
         type: "success"
       });
+      setFormValues({ name: "", description: "" });
+      setFormErrors({ name: "", description: "" });
     } catch (error) {
       setSnack({
         ...snack,
@@ -90,8 +101,16 @@ function Capabilities({ lang }) {
   }, [formErrors]);
 
   const getCapabilities = async () => {
-    const res = await getAllCapabilities();
-    setData(res?.response_body);
+    try {
+      const res = await getAllCapability(id);
+      console.log(`🚀🚀 ~~ getCapabilities ~~ res`, res);
+      setData(res?.response_body);
+    } catch (error) {
+      console.log(
+        `🚀🚀 ~~ getCapabilities ~~ error`,
+        error?.response?.data
+      );
+    }
   };
 
   const handleDelete = async (id) => {
@@ -133,6 +152,8 @@ function Capabilities({ lang }) {
         message: "Edited Successfully ",
         type: "success"
       });
+      setFormValues({ name: "", description: "" });
+      setFormErrors({ name: "", description: "" });
     } catch (error) {
       setSnack({
         ...snack,

@@ -18,14 +18,9 @@ export const login = async (uname, pass) => {
       auth: {
         username: uname,
         password: pass
-      },
-      headers: {
-        "Access-Control-Allow-Origin": "*",
-        "Content-Type": "application/json"
       }
     }
   );
-  console.log(`🚀🚀 ~~ login🚀🚀 ~~ data🚀🚀`, data);
 
   return data;
 };

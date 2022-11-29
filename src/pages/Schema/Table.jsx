@@ -1,3 +1,4 @@
+import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import Paper from "@mui/material/Paper";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
@@ -6,13 +7,17 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import React from "react";
+
 import { TdDelete, TdEdit } from "../../components/Table/table.style";
 
+import { useNavigate } from "react-router-dom";
 import { ReactComponent as Delete } from "../../assets/icons/delete.svg";
 import { ReactComponent as Edit } from "../../assets/icons/edit.svg";
 
 function SchemaTable({ data, handleEdit, handleDelete }) {
   console.log(`🚀🚀 ~~ SchemaTable ~~ data`, data);
+  const navigate = useNavigate();
+
   return (
     <TableContainer component={Paper} sx={{ marginBottom: 15 }}>
       <Table sx={{ minWidth: 650 }} aria-label='simple table'>
@@ -36,6 +41,13 @@ function SchemaTable({ data, handleEdit, handleDelete }) {
             <TableCell
               sx={{ borderRight: 1, borderColor: "lightgray" }}
               align='center'
+              style={{ width: 200 }}
+            >
+              Add School To Schema
+            </TableCell>
+            <TableCell
+              sx={{ borderRight: 1, borderColor: "lightgray" }}
+              align='center'
               style={{ width: 50 }}
             >
               Edit
@@ -56,13 +68,33 @@ function SchemaTable({ data, handleEdit, handleDelete }) {
               <TableCell
                 sx={{
                   borderRight: 1,
-                  borderColor: "lightgray"
-                  // cursor: "pointer"
+                  borderColor: "lightgray",
+                  cursor: "pointer"
                 }}
                 align='center'
-                // onClick={() => handleNavigate(row?.id)}
+                onClick={() =>
+                  navigate(`/capabilities/${row?.id}`, {
+                    state: { row: row?.id }
+                  })
+                }
               >
                 {row?.name_en}
+              </TableCell>
+
+              <TableCell
+                sx={{ borderRight: 1, borderColor: "lightgray" }}
+                style={{ width: 100 }}
+                align='center'
+              >
+                <TdEdit
+                  onClick={() =>
+                    navigate(`/link-school/${row?.id}`, {
+                      state: { row: row?.id }
+                    })
+                  }
+                >
+                  <AddCircleOutlineIcon />
+                </TdEdit>
               </TableCell>
 
               <TableCell

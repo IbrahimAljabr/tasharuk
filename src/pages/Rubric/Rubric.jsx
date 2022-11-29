@@ -21,6 +21,7 @@ import {
   editRubric,
   getAllRubricById
 } from "../../services/rubrics";
+import { editSchema } from "../../services/schemas";
 import { ErrorText } from "../CreateSchool/create-school.style";
 import RubricTable from "./Table";
 
@@ -31,7 +32,8 @@ function Rubric({ lang }) {
 
   const navigate = useNavigate();
 
-  const id = useLocation()?.state?.id;
+  const indicator = useLocation()?.state;
+  console.log(`🚀🚀 ~~ Rubric ~~ indicator`, indicator?.schemaId);
 
   const value = {
     description: "",
@@ -132,11 +134,15 @@ function Rubric({ lang }) {
 
   const addRubric = async () => {
     const body = {
-      indicator_id: id,
+      indicator_id: indicator?.id,
       description_en: formValues.description,
       name_en: formValues.name,
       score: formValues.score,
       order_no: order ? order + 1 : 1
+    };
+
+    const schemaValue = {
+      is_active: true
     };
 
     try {
@@ -149,6 +155,9 @@ function Rubric({ lang }) {
         message: "Added Successfully ",
         type: "success"
       });
+      await editSchema(indicator?.schemaId, schemaValue);
+      setFormValues(value);
+      setFormErrors(value);
     } catch (error) {
       setSnack({
         ...snack,
@@ -186,7 +195,7 @@ function Rubric({ lang }) {
   }, [formErrors]);
 
   const getRubric = async () => {
-    const res = await getAllRubricById(id);
+    const res = await getAllRubricById(indicator?.id);
     setData(res?.response_body);
   };
 

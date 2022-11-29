@@ -35,7 +35,7 @@ function IndicatorTable({
               sx={{ borderRight: 1, borderColor: "lightgray" }}
               align='center'
             >
-              Indicator Name
+              Indicator Description
             </TableCell>
 
             <TableCell

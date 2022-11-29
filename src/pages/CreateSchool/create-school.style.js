@@ -1,5 +1,6 @@
 import { TextField } from "@mui/material";
 import Select from "@mui/material/Select";
+import { DatePicker } from "@mui/x-date-pickers-pro";
 import styled from "styled-components";
 
 export const SubContainer = styled.div`
@@ -44,6 +45,7 @@ export const Form = styled.div`
   padding: 2rem;
   border-radius: 1rem;
   box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+  margin-bottom: 5rem;
 
   input {
     background-color: white;
@@ -63,10 +65,6 @@ export const SurveyForm = styled.div`
   input {
     background-color: white;
   }
-  div {
-    width: 100%;
-    align-items: center;
-  }
 `;
 
 export const SelectInput = styled(Select)`
@@ -77,4 +75,37 @@ export const SelectInput = styled(Select)`
 export const TextInput = styled(TextField)`
   width: 15rem;
   background-color: white;
+`;
+
+export const DatePickerInput = styled(DatePicker)`
+  width: 18rem;
+  background-color: white;
+  margin: 10rem;
+  padding: 2rem;
+
+  fieldset {
+    border-color: lightgray !important;
+  }
+
+  label {
+    color: gray !important;
+  }
+`;
+
+export const DateContainer = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  p {
+    height: 3rem;
+  }
+`;
+
+export const SelectInputContainer = styled.div`
+  margin: 1rem 0;
+
+  div {
+    width: 100%;
+  }
 `;

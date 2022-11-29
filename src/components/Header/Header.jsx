@@ -31,7 +31,6 @@ function Header() {
                 onClick={() => navigate("/school-management")}
                 active={
                   path === "school-management" ||
-                  path === "schema" ||
                   path === "add-school-students" ||
                   path === "survey" ||
                   path === "create-school"
@@ -45,12 +44,13 @@ function Header() {
                 active={
                   path === "capabilities" ||
                   path === "sub-capability" ||
+                  path === "schema" ||
                   path === "rubric" ||
                   path === "indicator"
                 }
-                onClick={() => navigate("/capabilities")}
+                onClick={() => navigate("/schema")}
               >
-                Capabilities
+                Schema
               </ListItem>
               <NavBarLogin>
                 <li
@@ -65,7 +65,7 @@ function Header() {
             </NavBarList>
           </NavBarText>
           <BlackNavBar active={pathname === "/school-management"}>
-            <li onClick={() => navigate("/schema")}>Schema</li>
+            <li /* onClick={() => navigate("/schema")} */>Survey</li>
             <li>Survey Module</li>
           </BlackNavBar>
         </HeaderContainer>

@@ -13,9 +13,27 @@ export const getSchools = async () => {
   return data;
 };
 
+export const getUsers = async (id) => {
+  const { data } = await axios.get(
+    `${REACT_APP_API_URL}/school-users/schools/${id}`,
+    {}
+  );
+
+  return data;
+};
+
 export const createSchool = async (body) => {
   const { data } = await axios.post(
     `${REACT_APP_API_URL}/schools`,
+    body
+  );
+
+  return data;
+};
+
+export const addUsersBulk = async (id, body) => {
+  const { data } = await axios.post(
+    `${REACT_APP_API_URL}/school-users/bulk-users/${id}`,
     body
   );
 

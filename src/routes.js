@@ -30,7 +30,7 @@ const routes = [
       import("./pages/Capabilities/Capabilities")
     ),
     label: "Capabilities",
-    path: "/capabilities",
+    path: "/capabilities/:id",
     title: "Capabilities"
   },
   {
@@ -91,11 +91,11 @@ const routes = [
   },
   {
     component: lazy(() =>
-      import("./pages/CreateSurvey/CreateSurvey")
+      import("./pages/Schema/LinkSchemaWithSchool")
     ),
-    label: "Create Survey",
-    path: "/create-survey",
-    title: "Create Survey"
+    label: "Link School",
+    path: "/link-school/:id",
+    title: "Link School"
   },
   {
     component: lazy(() => import("./pages/Survey/Survey")),

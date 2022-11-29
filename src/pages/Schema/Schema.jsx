@@ -3,6 +3,7 @@ import Container from "@mui/material/Container";
 import cookie from "cookiejs";
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import Snackbars from "../../components/SnackBar";
 import {
   createSchema,
   deleteSchema,
@@ -31,24 +32,42 @@ function Schema({ lang }) {
   const [formErrors, setFormErrors] = useState(initialValue);
   const [edit, setEdit] = useState(false);
   const [editId, setEditId] = useState(0);
+  const [snack, setSnack] = useState({
+    open: false,
+    type: "success",
+    message: ""
+  });
 
-  const handleEditCapability = async (event) => {
+  const handleEditSchema = async (event) => {
     event.preventDefault();
 
     const body = {
-      description_en: formValues.description,
-      name_en: formValues.name,
-      score: formValues.score
+      description: formValues.description,
+      name_en: formValues.name
     };
 
     try {
-      await editSchema(editId, body);
+      const data = await editSchema(editId, body);
+      console.log(`🚀🚀 ~~ handleEditSchema ~~ data`, data);
       getSchema();
       setOpen(false);
       setEdit(false);
       setFormValues(initialValue);
+      setSnack({
+        ...snack,
+        open: true,
+        message: "Edited Successfully ",
+        type: "success"
+      });
+      setFormValues(initialValue);
+      setFormErrors(initialValue);
     } catch (error) {
-      console.log(`🚀🚀 ~~ edit `, error);
+      setSnack({
+        ...snack,
+        open: true,
+        message: error?.response?.data?.error_message,
+        type: "error"
+      });
     }
   };
 
@@ -58,8 +77,7 @@ function Schema({ lang }) {
     setFormValues({
       ...formValues,
       name: body?.name_en,
-      description_en: body?.description_en,
-      score: body?.score
+      description: body?.description
     });
     setEditId(body?.id);
   };
@@ -99,21 +117,45 @@ function Schema({ lang }) {
       description: formValues.description
     };
 
-    await createSchema(body);
-    setOpen(false);
-    getSchema();
+    try {
+      await createSchema(body);
+      setOpen(false);
+      getSchema();
+      setSnack({
+        ...snack,
+        open: true,
+        message: "Added Successfully ",
+        type: "success"
+      });
+      setFormValues(initialValue);
+      setFormErrors(initialValue);
+    } catch (error) {
+      setSnack({
+        ...snack,
+        open: true,
+        message: error?.response?.data?.error_message,
+        type: "error"
+      });
+    }
   };
-
-  // const handleNavigate = async (id) => {
-  //   navigate(`/indicator/${id}`, { state: { id } });
-  // };
 
   const handleDelete = async (id) => {
     try {
       await deleteSchema(id);
       getSchema();
+      setSnack({
+        ...snack,
+        open: true,
+        message: "Deleted Successfully ",
+        type: "success"
+      });
     } catch (error) {
-      console.log(`🚀🚀 ~~ handleDelete ~~ error`, error);
+      setSnack({
+        ...snack,
+        open: true,
+        message: error?.response?.data?.error_message,
+        type: "error"
+      });
     }
   };
 
@@ -142,7 +184,7 @@ function Schema({ lang }) {
           handleChange={handleChange}
           handleSubmit={handleSubmit}
           formErrors={formErrors}
-          handleEditCapability={handleEditCapability}
+          handleEditCapability={handleEditSchema}
           edit={edit}
           formValues={formValues}
         />
@@ -152,6 +194,7 @@ function Schema({ lang }) {
         handleEdit={handleEdit}
         handleDelete={handleDelete}
       />
+      <Snackbars setOpen={setSnack} type={snack} />
     </Container>
   );
 }

@@ -22,6 +22,7 @@ function SchemaModal({
   edit,
   formValues
 }) {
+  console.log(`🚀🚀 ~~ formValues`, formValues);
   return (
     <Modal
       open={open}

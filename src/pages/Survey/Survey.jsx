@@ -15,6 +15,7 @@ import {
   FormContainer,
   OutLineButton,
   SelectInput,
+  SelectInputContainer,
   SurveyForm
 } from "../CreateSchool/create-school.style";
 
@@ -47,9 +48,9 @@ function Survey({ lang }) {
   const validate = (value) => {
     const errors = {};
 
-    if (!value.schema) {
-      errors.schema = "Schema Is Required";
-    }
+    // if (!value.schema) {
+    //   errors.schema = "Schema Is Required";
+    // }
 
     return errors;
   };
@@ -63,6 +64,7 @@ function Survey({ lang }) {
     try {
       await addUserToSchema(body);
     } catch (error) {
+      console.log(`🚀🚀 ~~ addUser ~~ error`, error?.response?.data);
       setSnack({
         ...snack,
         open: true,
@@ -80,6 +82,7 @@ function Survey({ lang }) {
 
   const getSchoolSchema = async () => {
     const res = await getAllSchoolSchema(id);
+    console.log(`🚀🚀 ~~ getSchoolSchema ~~ res`, res);
     setData(res?.response_body);
   };
 
@@ -100,7 +103,7 @@ function Survey({ lang }) {
       <FormContainer>
         <SurveyForm>
           <p>Select Schema</p>
-          <div>
+          <SelectInputContainer>
             <FormControl>
               <InputLabel>Schema</InputLabel>
               <SelectInput
@@ -108,7 +111,7 @@ function Survey({ lang }) {
                 onChange={handleChange}
                 name='schema'
               >
-                {data?.map(({ id, schema }) => (
+                {data?.map(({ schema }) => (
                   <MenuItem key={schema.id} value={schema.id}>
                     {schema.name_en}
                   </MenuItem>
@@ -117,7 +120,7 @@ function Survey({ lang }) {
 
               <ErrorText>{formErrors.schema}</ErrorText>
             </FormControl>
-          </div>
+          </SelectInputContainer>
           <OutLineButton onClick={handleSubmit}>Add</OutLineButton>
         </SurveyForm>
       </FormContainer>

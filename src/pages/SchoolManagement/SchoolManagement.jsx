@@ -14,6 +14,7 @@ function SchoolManagement({ lang }) {
   const [data, setData] = useState([]);
   const { setSchoolData } = useSchool();
   const auth = cookie.get("auth");
+
   const getAllSchools = async () => {
     const res = await getSchools();
     setData(res?.response_body);

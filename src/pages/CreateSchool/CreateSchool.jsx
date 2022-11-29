@@ -26,12 +26,14 @@ function CreateSchool({ lang }) {
 
   const initialValue = {
     schoolName: "",
-    contractPerson: "",
     numberOfStudents: "",
     phoneNumber: "",
     numberOfTeachers: "",
     country: "",
     website: "",
+    email: "",
+    firstName: "",
+    lastName: "",
     companyRegisterId: ""
   };
 
@@ -51,8 +53,21 @@ function CreateSchool({ lang }) {
       errors.schoolName = "School Name Is Required";
     }
 
-    if (!value.contractPerson) {
-      errors.contractPerson = "ContractPerson Is Required";
+    if (!value.firstName) {
+      errors.firstName = "First Name Is Required";
+    }
+
+    if (!value.lastName) {
+      errors.lastName = "LastName Is Required";
+    }
+
+    const regex =
+      /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
+
+    if (!value.email) {
+      errors.email = "Email Is Required";
+    } else if (!regex.test(value.email)) {
+      errors.email = "Email Is Not valid";
     }
 
     if (!value.numberOfStudents) {
@@ -88,6 +103,10 @@ function CreateSchool({ lang }) {
     teachers_no: formValues.numberOfTeachers,
     company_register_id: formValues.companyRegisterId,
     country_code: formValues.country,
+    contract_person_email: formValues.email,
+    contract_person_first_name: formValues.firstName,
+    contract_person_last_name: formValues.lastName,
+    contract_person_mobile_number: formValues.phoneNumber,
     website: formValues.website
   };
 
@@ -105,9 +124,10 @@ function CreateSchool({ lang }) {
     event.preventDefault();
 
     try {
-      const data = await editSchool(body);
-      const id = data?.response_body?.company_register_id;
-      navigate(`/add-school-students/${id}`, { state: { id } });
+      await editSchool(body);
+      setFormValues(initialValue);
+      setFormErrors(initialValue);
+      navigate(`/school-management`);
     } catch (error) {
       setSnack({
         ...snack,
@@ -124,6 +144,7 @@ function CreateSchool({ lang }) {
       const row = data?.response_body;
       navigate(`/add-school-students/${row.id}`, { state: { row } });
     } catch (error) {
+      console.log(`🚀🚀 `, error?.response?.data);
       setSnack({
         ...snack,
         open: true,
@@ -174,10 +195,6 @@ function CreateSchool({ lang }) {
     <Container dir={lang === "arabic" ? "rtl" : undefined}>
       <SubContainer>
         <h2>Add School</h2>
-        {/* <h2>Add Users</h2>
-        <OutLineButton onClick={() => navigate("/survey")}>
-          Survey
-        </OutLineButton> */}
       </SubContainer>
       <FormContainer>
         <Form>
@@ -192,16 +209,52 @@ function CreateSchool({ lang }) {
             />
             <ErrorText>{formErrors.schoolName}</ErrorText>
           </div>
+
           <div>
             <TextInput
               autoComplete='off'
-              label='Contract Person'
+              label='Company Register Number'
               variant='outlined'
-              name='contractPerson'
-              value={formValues.contractPerson}
+              name='companyRegisterId'
+              value={formValues.companyRegisterId}
               onChange={handleChange}
             />
-            <ErrorText>{formErrors.contractPerson}</ErrorText>
+            <ErrorText>{formErrors.companyRegisterId}</ErrorText>
+          </div>
+          <div>
+            <TextInput
+              autoComplete='off'
+              label='Contract Person First Name'
+              variant='outlined'
+              name='firstName'
+              value={formValues.firstName}
+              onChange={handleChange}
+            />
+            <ErrorText>{formErrors.firstName}</ErrorText>
+          </div>
+
+          <div>
+            <TextInput
+              autoComplete='off'
+              label='Contract Person Last Name'
+              variant='outlined'
+              name='lastName'
+              value={formValues.lastName}
+              onChange={handleChange}
+            />
+            <ErrorText>{formErrors.lastName}</ErrorText>
+          </div>
+
+          <div>
+            <TextInput
+              autoComplete='off'
+              label='Contract Person Email'
+              variant='outlined'
+              name='email'
+              value={formValues.email}
+              onChange={handleChange}
+            />
+            <ErrorText>{formErrors.email}</ErrorText>
           </div>
           <div>
             <TextInput
@@ -267,17 +320,6 @@ function CreateSchool({ lang }) {
               onChange={handleChange}
             />
             <ErrorText>{formErrors.website}</ErrorText>
-          </div>
-          <div>
-            <TextInput
-              autoComplete='off'
-              label='Company Register Number'
-              variant='outlined'
-              name='companyRegisterId'
-              value={formValues.companyRegisterId}
-              onChange={handleChange}
-            />
-            <ErrorText>{formErrors.companyRegisterId}</ErrorText>
           </div>
 
           <OutLineButton

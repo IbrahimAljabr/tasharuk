@@ -71,8 +71,7 @@ function SubCapability({ lang }) {
     };
 
     try {
-      const res = await editSubCapability(editId, body);
-      console.log(`🚀🚀 ~~ handleEdit ~~ res`, res);
+      await editSubCapability(editId, body);
       getSubCapability();
       setOpen(false);
       setEdit(false);
@@ -83,6 +82,8 @@ function SubCapability({ lang }) {
         message: "Edited Successfully ",
         type: "success"
       });
+      setFormValues({ name: "" });
+      setFormErrors({ name: "" });
     } catch (error) {
       setSnack({
         ...snack,
@@ -94,7 +95,6 @@ function SubCapability({ lang }) {
   };
 
   const handleEdit = async (body) => {
-    console.log(`🚀🚀 ~~  ~~ `, body);
     setEdit(true);
     setOpen(true);
     setFormValues({ ...formValues, name: body?.name_en });
@@ -122,8 +122,7 @@ function SubCapability({ lang }) {
     };
 
     try {
-      const res = await createSubCapability(body);
-      console.log(`🚀🚀🚀🚀  res`, res);
+      await createSubCapability(body);
       setOpen(false);
       getSubCapability();
       setSnack({
@@ -132,6 +131,8 @@ function SubCapability({ lang }) {
         message: "Added Successfully ",
         type: "success"
       });
+      setFormValues({ name: "" });
+      setFormErrors({ name: "" });
     } catch (error) {
       setSnack({
         ...snack,

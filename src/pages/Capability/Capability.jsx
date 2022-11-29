@@ -26,7 +26,7 @@ function Capability({ lang }) {
   };
 
   useEffect(() => {
-    getCapability();
+    // getCapability();
   }, []);
 
   return (

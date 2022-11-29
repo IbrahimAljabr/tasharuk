@@ -76,12 +76,9 @@ function SchoolTable({ data, handleDelete }) {
                 align='center'
                 onClick={() => {
                   setSchoolData(row);
-                  navigate(
-                    `/add-school-students/${row?.company_register_id}`,
-                    {
-                      state: { row }
-                    }
-                  );
+                  navigate(`/add-school-students/${row?.id}`, {
+                    state: { row }
+                  });
                 }}
               >
                 {row?.school_name_en}
@@ -97,17 +94,25 @@ function SchoolTable({ data, handleDelete }) {
               <TableCell
                 sx={{ borderRight: 1, borderColor: "lightgray" }}
                 align='center'
-              ></TableCell>
+              >
+                {`${row?.contact_person?.firstName || ""} ${
+                  row?.contact_person?.lastName || ""
+                }`}
+              </TableCell>
 
               <TableCell
                 sx={{ borderRight: 1, borderColor: "lightgray" }}
                 align='center'
-              ></TableCell>
+              >
+                {row?.contact_person?.mobileNumber}
+              </TableCell>
 
               <TableCell
                 sx={{ borderRight: 1, borderColor: "lightgray" }}
                 align='center'
-              ></TableCell>
+              >
+                {new Date(row?.created_date)?.toLocaleDateString()}
+              </TableCell>
 
               <TableCell
                 sx={{ borderRight: 1, borderColor: "lightgray" }}

@@ -20,7 +20,16 @@ export const getAllSchoolSchema = async () => {
 
 export const addUserToSchema = async (body) => {
   const { data } = await axios.post(
-    `${REACT_APP_API_URL}/schools`,
+    `${REACT_APP_API_URL}/surveys`,
+    body
+  );
+
+  return data;
+};
+
+export const addSchoolToSchema = async (body) => {
+  const { data } = await axios.post(
+    `${REACT_APP_API_URL}/school-schemas`,
     body
   );
 

@@ -6,7 +6,9 @@ import { useLocation, useNavigate } from "react-router-dom";
 import Snackbars from "../../components/SnackBar";
 import {
   addSchoolUser,
-  getAllPositions
+  addUsersBulk,
+  getAllPositions,
+  getUsers
 } from "../../services/school";
 import {
   ErrorText,
@@ -17,11 +19,11 @@ import {
   TextInput
 } from "../CreateSchool/create-school.style";
 import { AddContainer, OutLineButton } from "./add-school-students";
+import UsersTable from "./Table";
 
 function AddSchoolStudents({ lang }) {
   const navigate = useNavigate();
   const companyId = useLocation()?.state?.row?.company_register_id;
-  console.log(`🚀🚀 ~~ AddSchoolStudents ~~ companyId`, companyId);
   const auth = cookie.get("auth");
 
   const initialValue = {
@@ -33,6 +35,7 @@ function AddSchoolStudents({ lang }) {
     password: ""
   };
 
+  const [data, setData] = useState([]);
   const [formValues, setFormValues] = useState(initialValue);
   const [formErrors, setFormErrors] = useState(initialValue);
   const [positions, setPositions] = useState([]);
@@ -42,22 +45,58 @@ function AddSchoolStudents({ lang }) {
     message: ""
   });
 
+  const id = useLocation()?.state?.row?.id;
+
   const handleChange = (event) => {
     const { name, value } = event.target;
     setFormValues({ ...formValues, [name]: value });
   };
 
   const handleInput = (event) => {
+    const body = event.target.files[0];
     console.log(
       `🚀🚀 ~~ handleInput ~~ event`,
       event.target.files[0]
     );
+    try {
+      uploadFile(body);
+      setSnack({
+        ...snack,
+        open: true,
+        message: "File uploaded successfully",
+        type: "success"
+      });
+    } catch (error) {
+      setSnack({
+        ...snack,
+        open: true,
+        message: error?.response?.data?.error_message,
+        type: "error"
+      });
+    }
+  };
+
+  const uploadFile = async (body) => {
+    await addUsersBulk(body);
   };
 
   const handleSubmit = (event) => {
     event.preventDefault();
     setFormErrors(validate(formValues));
   };
+
+  const getAllSchoolUsers = async () => {
+    const res = await getUsers(id);
+    setData(res?.response_body);
+  };
+
+  useEffect(() => {
+    if (auth) {
+      getAllSchoolUsers();
+    } else {
+      navigate("/");
+    }
+  }, []);
 
   const validate = (value) => {
     const errors = {};
@@ -245,12 +284,13 @@ function AddSchoolStudents({ lang }) {
             <input
               onChange={handleInput}
               type='file'
-              // accept='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+              accept='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
             />
           </AddContainer>
         </Form>
       </FormContainer>
       <Snackbars setOpen={setSnack} type={snack} />
+      <UsersTable data={data} />
     </Container>
   );
 }

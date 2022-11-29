@@ -32,6 +32,10 @@ function Indicator({ lang }) {
   const auth = cookie.get("auth");
 
   const [data, setData] = useState([]);
+  console.log(
+    `🚀🚀 ~~  ~~ `,
+    data?.[0]?.sub_capability?.capability?.schema?.id
+  );
   const [formValues, setFormValues] = useState({ description: "" });
   const [formErrors, setFormErrors] = useState({ description: "" });
   const [edit, setEdit] = useState(false);
@@ -60,18 +64,19 @@ function Indicator({ lang }) {
     };
 
     try {
-      const res = await editIndicator(editId, body);
-      console.log(`🚀🚀 ~~ handleEdit ~~ res`, res);
+      await editIndicator(editId, body);
+
       getIndicator();
       setOpen(false);
       setEdit(false);
-      setFormValues({ description: "" });
       setSnack({
         ...snack,
         open: true,
         message: "Edited Successfully ",
         type: "success"
       });
+      setFormValues({ description: "" });
+      setFormErrors({ description: "" });
     } catch (error) {
       setSnack({
         ...snack,
@@ -83,7 +88,6 @@ function Indicator({ lang }) {
   };
 
   const handleEdit = async (body) => {
-    console.log(`🚀🚀 ~~  ~~ `, body);
     setEdit(true);
     setOpen(true);
     setFormValues({ ...formValues, name: body?.name_en });
@@ -101,7 +105,12 @@ function Indicator({ lang }) {
   };
 
   const handleNavigate = async (id) => {
-    navigate(`/rubric/${id}`, { state: { id } });
+    navigate(`/rubric/${id}`, {
+      state: {
+        id,
+        schemaId: data?.[0]?.sub_capability?.capability?.schema?.id
+      }
+    });
   };
 
   let order = data.reduce((acc, value) => {
@@ -125,6 +134,8 @@ function Indicator({ lang }) {
         message: "Added Successfully ",
         type: "success"
       });
+      setFormValues({ description: "" });
+      setFormErrors({ description: "" });
     } catch (error) {
       setSnack({
         ...snack,
@@ -146,12 +157,7 @@ function Indicator({ lang }) {
       const res = await getAllIndicator(id);
       setData(res?.response_body);
     } catch (error) {
-      setSnack({
-        ...snack,
-        open: true,
-        message: error?.response?.data?.error_message,
-        type: "error"
-      });
+      console.log(`🚀🚀 ~~ getIndicator ~~ error`, error?.response);
     }
   };
 

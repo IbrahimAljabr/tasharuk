@@ -4,17 +4,9 @@ const { REACT_APP_API_URL } = process.env;
 
 axios.defaults.withCredentials = true;
 
-export const getAllCapabilities = async () => {
+export const getAllCapability = async (id) => {
   const { data } = await axios.get(
-    `${REACT_APP_API_URL}/capabilities`
-  );
-
-  return data;
-};
-
-export const getAllCapability = async () => {
-  const { data } = await axios.get(
-    `${REACT_APP_API_URL}/capability-positions`
+    `${REACT_APP_API_URL}/capabilities/schemas/${id}`
   );
 
   return data;

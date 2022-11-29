@@ -17,7 +17,7 @@ export default function Snackbars({ type, setOpen }) {
     setOpen({ ...type, open: false });
   };
 
-  const vertical = "top";
+  const vertical = "bottom";
   const horizontal = "center";
 
   return (
