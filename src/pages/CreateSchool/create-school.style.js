@@ -109,3 +109,7 @@ export const SelectInputContainer = styled.div`
     width: 100%;
   }
 `;
+
+export const PositionInput = styled.input`
+  margin-left: 3rem;
+`;

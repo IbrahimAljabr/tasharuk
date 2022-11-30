@@ -43,6 +43,7 @@ function Rubric({ lang }) {
 
   const [data, setData] = useState([]);
   const [formValues, setFormValues] = useState(value);
+  console.log(`🚀🚀 ~~ Rubric ~~ formValues`, formValues);
   const [formErrors, setFormErrors] = useState(value);
   const [edit, setEdit] = useState(false);
   const [editId, setEditId] = useState(0);
@@ -89,7 +90,7 @@ function Rubric({ lang }) {
     setFormValues({
       ...formValues,
       name: body?.name_en,
-      description_en: body?.description_en,
+      description: body?.description_en,
       score: body?.score
     });
     setEditId(body?.id);

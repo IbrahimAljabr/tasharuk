@@ -100,7 +100,21 @@ const routes = [
   {
     component: lazy(() => import("./pages/Survey/Survey")),
     label: "Survey",
-    path: "/survey",
+    path: "/create-survey",
+    title: "Survey"
+  },
+  {
+    component: lazy(() => import("./pages/Positions/Positions")),
+    label: "Positions",
+    path: "/positions/:id",
+    title: "Positions"
+  },
+  {
+    component: lazy(() =>
+      import("./pages/CreateSurvey/CreateSurvey")
+    ),
+    label: "Survey",
+    path: "/survey/:id",
     title: "Survey"
   },
   {

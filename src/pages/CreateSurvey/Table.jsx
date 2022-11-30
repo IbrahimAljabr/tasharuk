@@ -1,3 +1,5 @@
+import DoneIcon from "@mui/icons-material/Done";
+import ErrorOutlineIcon from "@mui/icons-material/ErrorOutline";
 import Paper from "@mui/material/Paper";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
@@ -6,18 +8,12 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import React from "react";
-import { TdDelete, TdEdit } from "../../components/Table/table.style";
+import { useNavigate } from "react-router-dom";
+import { TdEdit, TdError } from "../../components/Table/table.style";
+function SurveyTable({ data }) {
+  console.log(`🚀🚀 ~~ SurveyTable ~~ data`, data);
+  const navigate = useNavigate();
 
-import { ReactComponent as Delete } from "../../assets/icons/delete.svg";
-import { ReactComponent as Edit } from "../../assets/icons/edit.svg";
-
-function SubCapabilityTable({
-  data,
-  handleNavigate,
-  handleDelete,
-  handleEdit
-}) {
-  console.log(`🚀🚀 ~~ SubCapabilityTable ~~ data`, data);
   return (
     <TableContainer component={Paper} sx={{ marginBottom: 15 }}>
       <Table sx={{ minWidth: 650 }} aria-label='simple table'>
@@ -35,22 +31,28 @@ function SubCapabilityTable({
               sx={{ borderRight: 1, borderColor: "lightgray" }}
               align='center'
             >
-              Sub-Capability Name
+              Schema Name
             </TableCell>
 
             <TableCell
               sx={{ borderRight: 1, borderColor: "lightgray" }}
               align='center'
-              style={{ width: 50 }}
+              style={{ width: 120 }}
             >
-              Edit
+              Start Date
             </TableCell>
             <TableCell
               sx={{ borderRight: 1, borderColor: "lightgray" }}
               align='center'
-              style={{ width: 50 }}
+              style={{ width: 120 }}
             >
-              Delete
+              End Date
+            </TableCell>
+            <TableCell
+              sx={{ borderRight: 1, borderColor: "lightgray" }}
+              align='center'
+            >
+              Status
             </TableCell>
           </TableRow>
         </TableHead>
@@ -65,28 +67,41 @@ function SubCapabilityTable({
                   cursor: "pointer"
                 }}
                 align='center'
-                onClick={() => handleNavigate(row?.id)}
+                onClick={() =>
+                  navigate(`/positions/${row?.schema?.id}`, {
+                    state: row
+                  })
+                }
               >
-                {row?.name_en}
+                {row?.schema?.name_en}
               </TableCell>
 
               <TableCell
                 sx={{ borderRight: 1, borderColor: "lightgray" }}
-                style={{ width: 50 }}
                 align='center'
               >
-                <TdEdit onClick={() => handleEdit(row)}>
-                  <Edit />
-                </TdEdit>
+                {new Date(row?.start_date)?.toLocaleDateString()}
               </TableCell>
               <TableCell
                 sx={{ borderRight: 1, borderColor: "lightgray" }}
-                style={{ width: 50 }}
                 align='center'
               >
-                <TdDelete onClick={() => handleDelete(row?.id)}>
-                  <Delete />
-                </TdDelete>
+                {new Date(row?.end_date)?.toLocaleDateString()}
+              </TableCell>
+
+              <TableCell
+                sx={{ borderRight: 1, borderColor: "lightgray" }}
+                align='center'
+              >
+                {row?.is_active ? (
+                  <TdEdit>
+                    <DoneIcon />
+                  </TdEdit>
+                ) : (
+                  <TdError>
+                    <ErrorOutlineIcon />
+                  </TdError>
+                )}
               </TableCell>
             </TableRow>
           ))}
@@ -96,4 +111,4 @@ function SubCapabilityTable({
   );
 }
 
-export default SubCapabilityTable;
+export default SurveyTable;

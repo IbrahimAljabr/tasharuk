@@ -1,21 +1,22 @@
-import AddCircleIcon from "@mui/icons-material/AddCircle";
 import Container from "@mui/material/Container";
 import cookie from "cookiejs";
 import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { getAllSchoolSurvey } from "../../services/survey";
+import { getCapabilityBySchemaId } from "../../services/survey";
+import { LineButton } from "../AddSchoolStudents/add-school-students";
 import { Create } from "../Capabilities/capabilities.style";
-import SurveyTable from "./Table";
+import PositionsTable from "./Table";
 
 function CreateSurvey({ lang }) {
   const navigate = useNavigate();
   const [data, setData] = useState([]);
   const auth = cookie.get("auth");
   const id = useLocation()?.state;
+  console.log(`🚀🚀 ~~ CreateSurvey ~~ id`, id);
 
   const getSchoolSchema = async () => {
     try {
-      const res = await getAllSchoolSurvey(id);
+      const res = await getCapabilityBySchemaId(id?.schema?.id);
 
       setData(res?.response_body);
     } catch (error) {
@@ -34,18 +35,17 @@ function CreateSurvey({ lang }) {
   return (
     <Container dir={lang === "arabic" ? "rtl" : undefined}>
       <Create>
-        <AddCircleIcon />
-        <p
+        <LineButton
           onClick={() =>
-            navigate(`/link-school/${id}`, {
-              state: id
+            navigate(`/add-school-students/${id?.school?.id}`, {
+              state: { row: id?.school }
             })
           }
         >
-          Create Survey
-        </p>
+          Add Users
+        </LineButton>
       </Create>
-      <SurveyTable data={data} />
+      <PositionsTable data={data} id={id} />
     </Container>
   );
 }

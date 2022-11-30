@@ -32,6 +32,7 @@ export const createSchool = async (body) => {
 };
 
 export const addUsersBulk = async (id, body) => {
+  console.log(`🚀🚀 ~~ addUsersBulk ~~ id, body`, id, body);
   const { data } = await axios.post(
     `${REACT_APP_API_URL}/school-users/bulk-users/${id}`,
     body

@@ -8,8 +8,10 @@ import cookie from "cookiejs";
 import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import Snackbars from "../../components/SnackBar";
-import { addSchoolToSchema } from "../../services/schemas";
-import { getSchools } from "../../services/school";
+import {
+  addSchoolToSchema,
+  getAllActiveSchemas
+} from "../../services/schemas";
 import { Create } from "../Capabilities/capabilities.style";
 import {
   DateContainer,
@@ -26,8 +28,7 @@ function LinkSchemaWithSchool({ lang }) {
   const navigate = useNavigate();
   const auth = cookie.get("auth");
 
-  const id = useLocation()?.state?.row;
-
+  const id = useLocation()?.state;
   const initialValue = {
     school: "",
     startValue: "",
@@ -57,8 +58,8 @@ function LinkSchemaWithSchool({ lang }) {
   const validate = (value) => {
     const errors = {};
 
-    if (!value.school) {
-      errors.school = "School Is Required";
+    if (!value.schema) {
+      errors.schema = "Schema Is Required";
     }
 
     if (!value.startValue) {
@@ -74,16 +75,22 @@ function LinkSchemaWithSchool({ lang }) {
 
   const addUser = async () => {
     const body = {
-      school_id: formValues?.school,
-      schema_id: id,
-      start_date: formValues?.startValue,
-      end_date: formValues?.endValue
+      school_id: id,
+      schema_id: formValues?.schema,
+      start_date: formValues?.startValue?.$d,
+      end_date: formValues?.endValue?.$d
     };
-    console.log(`🚀🚀 ~~ addUser ~~ body`, body);
     try {
       await addSchoolToSchema(body);
+      setSnack({
+        ...snack,
+        open: true,
+        message: "added successfully",
+        type: "success"
+      });
       setFormValues(initialValue);
       setFormErrors(initialValue);
+      navigate(`/survey/${id}`, { state: id });
     } catch (error) {
       console.log(`🚀🚀 ~~ addUser ~~ error`, error);
       setSnack({
@@ -101,14 +108,14 @@ function LinkSchemaWithSchool({ lang }) {
     }
   }, [formErrors]);
 
-  const getAllSchools = async () => {
-    const res = await getSchools(id);
+  const getAllSchemas = async () => {
+    const res = await getAllActiveSchemas();
     setData(res?.response_body);
   };
 
   useEffect(() => {
     if (auth) {
-      getAllSchools();
+      getAllSchemas();
     } else {
       navigate("/");
     }
@@ -122,7 +129,26 @@ function LinkSchemaWithSchool({ lang }) {
       </Create>
       <FormContainer>
         <SurveyForm>
-          <p>Select Date and School</p>
+          <p>Select Date and Schema</p>
+
+          <SelectInputContainer>
+            <FormControl>
+              <InputLabel>Schema</InputLabel>
+              <SelectInput
+                label='Schema'
+                onChange={handleChange}
+                name='schema'
+              >
+                {data?.map(({ id, name_en }) => (
+                  <MenuItem key={id} value={id}>
+                    {name_en}
+                  </MenuItem>
+                ))}
+              </SelectInput>
+
+              <ErrorText>{formErrors.school}</ErrorText>
+            </FormControl>
+          </SelectInputContainer>
 
           <DateContainer>
             <LocalizationProvider dateAdapter={AdapterDayjs}>
@@ -157,24 +183,7 @@ function LinkSchemaWithSchool({ lang }) {
               </div>
             </LocalizationProvider>
           </DateContainer>
-          <SelectInputContainer>
-            <FormControl>
-              <InputLabel>School</InputLabel>
-              <SelectInput
-                label='School'
-                onChange={handleChange}
-                name='school'
-              >
-                {data?.map(({ id, school_name_en }) => (
-                  <MenuItem key={id} value={id}>
-                    {school_name_en}
-                  </MenuItem>
-                ))}
-              </SelectInput>
 
-              <ErrorText>{formErrors.school}</ErrorText>
-            </FormControl>
-          </SelectInputContainer>
           <OutLineButton onClick={handleSubmit}>Add</OutLineButton>
         </SurveyForm>
       </FormContainer>

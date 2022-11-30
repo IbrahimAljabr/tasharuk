@@ -1,4 +1,3 @@
-import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import Paper from "@mui/material/Paper";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
@@ -41,13 +40,6 @@ function SchemaTable({ data, handleEdit, handleDelete }) {
             <TableCell
               sx={{ borderRight: 1, borderColor: "lightgray" }}
               align='center'
-              style={{ width: 200 }}
-            >
-              Add School To Schema
-            </TableCell>
-            <TableCell
-              sx={{ borderRight: 1, borderColor: "lightgray" }}
-              align='center'
               style={{ width: 50 }}
             >
               Edit
@@ -81,7 +73,7 @@ function SchemaTable({ data, handleEdit, handleDelete }) {
                 {row?.name_en}
               </TableCell>
 
-              <TableCell
+              {/* <TableCell
                 sx={{ borderRight: 1, borderColor: "lightgray" }}
                 style={{ width: 100 }}
                 align='center'
@@ -95,7 +87,7 @@ function SchemaTable({ data, handleEdit, handleDelete }) {
                 >
                   <AddCircleOutlineIcon />
                 </TdEdit>
-              </TableCell>
+              </TableCell> */}
 
               <TableCell
                 sx={{ borderRight: 1, borderColor: "lightgray" }}

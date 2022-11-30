@@ -2,7 +2,7 @@ import axios from "axios";
 
 const { REACT_APP_API_URL } = process.env;
 
-axios.defaults.withCredentials = true;
+// axios.defaults.withCredentials = true;
 
 /**
  * Login user.
@@ -21,6 +21,7 @@ export const login = async (uname, pass) => {
       }
     }
   );
+  console.log(`🚀🚀 ~~ login🚀🚀 ~~ data🚀🚀`, data);
 
   return data;
 };

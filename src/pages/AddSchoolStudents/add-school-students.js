@@ -16,6 +16,15 @@ export const OutLineButton = styled.div`
   border: none;
 `;
 
+export const LineButton = styled.div`
+  padding: 0.5rem 3rem;
+  border-radius: 2rem;
+  cursor: pointer;
+  color: black;
+  border: 1px gray solid;
+  margin-right: 3rem;
+`;
+
 export const FileButton = styled.div`
   padding: 0.5rem 4rem;
   background-color: white;

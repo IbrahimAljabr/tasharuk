@@ -1,8 +1,12 @@
 import AddCircleIcon from "@mui/icons-material/AddCircle";
-import React from "react";
+import React, { useEffect, useState } from "react";
 
 import { Switch } from "@mui/material";
 import Modal from "@mui/material/Modal";
+import {
+  editSchoolSchema,
+  getSchoolSchemaById
+} from "../../services/schemas";
 import {
   ModelBody,
   ModelButton,
@@ -22,7 +26,28 @@ function SchemaModal({
   edit,
   formValues
 }) {
-  console.log(`🚀🚀 ~~ formValues`, formValues);
+  const [data, setData] = useState({});
+  const editActiveSchema = async (value) => {
+    const body = {
+      is_active: value.target.checked
+    };
+    try {
+      const res = await editSchoolSchema(data?.id, body);
+      console.log(`🚀🚀 ~~ editActiveSchema ~~ res`, res);
+    } catch (error) {
+      console.log(`🚀🚀🚀🚀 error 🚀🚀🚀🚀🚀🚀`, error.response);
+    }
+  };
+
+  const getActiveSchema = async (value, body) => {
+    console.log(`🚀🚀 ~~ getActiveSchema ~~ id`, value, body);
+    const res = await getSchoolSchemaById(formValues.schemaId);
+    setData(res?.response_body?.[0]);
+  };
+
+  useEffect(() => {
+    getActiveSchema();
+  }, [formValues?.schemaId]);
   return (
     <Modal
       open={open}
@@ -41,7 +66,11 @@ function SchemaModal({
           <form>
             <ModelSwitch>
               <p>Capability Schema Instance Name</p>
-              <Switch color='success' disabled />
+              <Switch
+                color='success'
+                disabled={!formValues?.isActive}
+                onChange={editActiveSchema}
+              />
             </ModelSwitch>
             <div>
               <input
@@ -49,7 +78,7 @@ function SchemaModal({
                 required
                 name='name'
                 onChange={handleChange}
-                value={formValues.name}
+                value={formValues?.name}
                 autoComplete='off'
               />
               <ErrorText>{formErrors.name}</ErrorText>

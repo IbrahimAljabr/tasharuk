@@ -3,7 +3,6 @@ import React from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import logo from "../../assets/images/logo.png";
 import {
-  BlackNavBar,
   HeaderContainer,
   ListItem,
   NavBarImage,
@@ -33,6 +32,9 @@ function Header() {
                   path === "school-management" ||
                   path === "add-school-students" ||
                   path === "survey" ||
+                  path === "link-school" ||
+                  path === "create-survey" ||
+                  path === "positions" ||
                   path === "create-school"
                 }
               >
@@ -64,10 +66,12 @@ function Header() {
               </NavBarLogin>
             </NavBarList>
           </NavBarText>
-          <BlackNavBar active={pathname === "/school-management"}>
-            <li /* onClick={() => navigate("/schema")} */>Survey</li>
-            <li>Survey Module</li>
-          </BlackNavBar>
+          {/* <BlackNavBar active={pathname === "/school-management"}>
+            <li onClick={() => navigate("/add-school-students")}>
+              Add Users
+            </li>
+            <li onClick={() => navigate("/create-survey")}>Survey</li>
+          </BlackNavBar> */}
         </HeaderContainer>
       </SubHeader>
     </>

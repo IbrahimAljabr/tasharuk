@@ -27,3 +27,17 @@ export const TdEdit = styled.div`
     }
   }
 `;
+
+export const TdError = styled.div`
+  text-align: center;
+  cursor: pointer;
+
+  svg {
+    width: 1.2rem;
+    height: 1.2rem;
+
+    path {
+      stroke: red;
+    }
+  }
+`;

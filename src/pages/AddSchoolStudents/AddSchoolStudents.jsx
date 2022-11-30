@@ -18,7 +18,11 @@ import {
   SubContainer,
   TextInput
 } from "../CreateSchool/create-school.style";
-import { AddContainer, OutLineButton } from "./add-school-students";
+import {
+  AddContainer,
+  LineButton,
+  OutLineButton
+} from "./add-school-students";
 import UsersTable from "./Table";
 
 function AddSchoolStudents({ lang }) {
@@ -45,7 +49,8 @@ function AddSchoolStudents({ lang }) {
     message: ""
   });
 
-  const id = useLocation()?.state?.row?.id;
+  const id = useLocation()?.state?.row;
+  console.log(`🚀🚀 ~~ AddSchoolStudents ~~ id`, id);
 
   const handleChange = (event) => {
     const { name, value } = event.target;
@@ -54,12 +59,14 @@ function AddSchoolStudents({ lang }) {
 
   const handleInput = (event) => {
     const body = event.target.files[0];
-    console.log(
-      `🚀🚀 ~~ handleInput ~~ event`,
-      event.target.files[0]
-    );
+
+    uploadFile(id.company_register_id, body);
+  };
+
+  const uploadFile = async (id, body) => {
     try {
-      uploadFile(body);
+      const res = await addUsersBulk(id, body);
+      console.log(`🚀🚀 ~~ 🚀🚀 ~~ res 🚀🚀`, res);
       setSnack({
         ...snack,
         open: true,
@@ -67,6 +74,7 @@ function AddSchoolStudents({ lang }) {
         type: "success"
       });
     } catch (error) {
+      console.log(`🚀🚀 ~~ 🚀🚀🚀🚀 ~~ error🚀🚀`, error);
       setSnack({
         ...snack,
         open: true,
@@ -76,17 +84,13 @@ function AddSchoolStudents({ lang }) {
     }
   };
 
-  const uploadFile = async (body) => {
-    await addUsersBulk(body);
-  };
-
   const handleSubmit = (event) => {
     event.preventDefault();
     setFormErrors(validate(formValues));
   };
 
   const getAllSchoolUsers = async () => {
-    const res = await getUsers(id);
+    const res = await getUsers(id.id);
     setData(res?.response_body);
   };
 
@@ -154,8 +158,8 @@ function AddSchoolStudents({ lang }) {
         message: "User added successfully",
         type: "success"
       });
-      navigate(`/survey`, {
-        state: { user: user?.response_body?.id }
+      navigate(`/create-survey`, {
+        state: { user: user?.response_body, schoolId: id.id }
       });
     } catch (error) {
       setSnack({
@@ -189,10 +193,20 @@ function AddSchoolStudents({ lang }) {
   return (
     <Container dir={lang === "arabic" ? "rtl" : undefined}>
       <SubContainer>
-        <h2>Add Users</h2>
-        {/* <OutLineButton onClick={() => navigate("/survey")}>
+        <LineButton
+          onClick={() => navigate(`/add-school-students/${id}`)}
+        >
+          Add Users
+        </LineButton>
+        <LineButton
+          onClick={() =>
+            navigate(`/survey/${id.id}`, {
+              state: id.id
+            })
+          }
+        >
           Survey
-        </OutLineButton> */}
+        </LineButton>
       </SubContainer>
       <FormContainer>
         <Form>
@@ -281,11 +295,7 @@ function AddSchoolStudents({ lang }) {
           <AddContainer>
             <OutLineButton onClick={handleSubmit}>Add</OutLineButton>
             <p>Or</p>
-            <input
-              onChange={handleInput}
-              type='file'
-              accept='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
-            />
+            <input onChange={handleInput} type='file' accept='.csv' />
           </AddContainer>
         </Form>
       </FormContainer>

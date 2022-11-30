@@ -10,9 +10,17 @@ export const getAllSchemas = async () => {
   return data;
 };
 
-export const getAllSchoolSchema = async () => {
+export const getAllActiveSchemas = async () => {
   const { data } = await axios.get(
-    `${REACT_APP_API_URL}/school-schemas`
+    `${REACT_APP_API_URL}/schemas/active`
+  );
+
+  return data;
+};
+
+export const getAllSchoolSchema = async (id) => {
+  const { data } = await axios.get(
+    `${REACT_APP_API_URL}/school-schemas/schools/${id}`
   );
 
   return data;
@@ -57,6 +65,32 @@ export const editSchema = async (id, body) => {
   const { data } = await axios.put(
     `${REACT_APP_API_URL}/schemas/${id}`,
     body
+  );
+
+  return data;
+};
+
+export const editSchoolSchema = async (id, body) => {
+  console.log(`🚀🚀 ~~ editSchoolSchema ~~ id,body`, id, body);
+  const { data } = await axios.put(
+    `${REACT_APP_API_URL}/school-schemas/${id}`,
+    body
+  );
+
+  return data;
+};
+
+export const getSchoolSchemaById = async (id) => {
+  const { data } = await axios.get(
+    `${REACT_APP_API_URL}/school-schemas/schemas/${id}`
+  );
+
+  return data;
+};
+
+export const activeSchoolSchema = async (id) => {
+  const { data } = await axios.put(
+    `${REACT_APP_API_URL}/schemas/${id}`
   );
 
   return data;

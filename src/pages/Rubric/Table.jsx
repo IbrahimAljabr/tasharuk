@@ -11,12 +11,7 @@ import { TdDelete, TdEdit } from "../../components/Table/table.style";
 import { ReactComponent as Delete } from "../../assets/icons/delete.svg";
 import { ReactComponent as Edit } from "../../assets/icons/edit.svg";
 
-function RubricTable({
-  data,
-  handleNavigate,
-  handleDelete,
-  handleEdit
-}) {
+function RubricTable({ data, handleDelete, handleEdit }) {
   console.log(`🚀🚀 ~~ RubricTable ~~ data`, data);
   return (
     <TableContainer component={Paper} sx={{ marginBottom: 15 }}>

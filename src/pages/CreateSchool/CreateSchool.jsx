@@ -22,6 +22,7 @@ import {
 function CreateSchool({ lang }) {
   const navigate = useNavigate();
   const oldData = useLocation().state;
+  console.log(`🚀🚀 ~~ CreateSchool ~~ oldData`, oldData);
   const auth = cookie.get("auth");
 
   const initialValue = {
@@ -38,6 +39,7 @@ function CreateSchool({ lang }) {
   };
 
   const [formValues, setFormValues] = useState(initialValue);
+  console.log(`🚀🚀 ~~ CreateSchool ~~ formValues`, formValues);
   const [formErrors, setFormErrors] = useState(initialValue);
   const [countries, setCountries] = useState([]);
   const [snack, setSnack] = useState({
@@ -142,7 +144,7 @@ function CreateSchool({ lang }) {
     try {
       const data = await createSchool(body);
       const row = data?.response_body;
-      navigate(`/add-school-students/${row.id}`, { state: { row } });
+      navigate(`/survey/${row.id}`, { state: row.id });
     } catch (error) {
       console.log(`🚀🚀 `, error?.response?.data);
       setSnack({
@@ -167,13 +169,16 @@ function CreateSchool({ lang }) {
 
   const editDate = () => {
     if (oldData) {
+      console.log(`🚀🚀 ~~ editDate ~~ oldData`, oldData);
       const values = {
         schoolName: oldData?.row?.school_name_en,
         numberOfStudents: oldData?.row?.students_no,
-        phoneNumber: "",
+        phoneNumber: oldData?.row?.contact_person?.mobileNumber,
+        firstName: oldData?.row?.contact_person?.firstName,
+        lastName: oldData?.row?.contact_person?.lastName,
+        email: oldData?.row?.contact_person?.email,
         numberOfTeachers: oldData?.row?.teachers_no,
         country: oldData?.row?.country?.country_code,
-        contractPerson: "",
         website: oldData?.row?.website,
         companyRegisterId: oldData?.row?.company_register_id
       };

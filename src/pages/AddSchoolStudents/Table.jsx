@@ -57,15 +57,6 @@ function UsersTable({ data }) {
                   // cursor: "pointer"
                 }}
                 align='center'
-                onClick={() => {
-                  // setSchoolData(row);
-                  // navigate(
-                  //   `/add-school-students/${row?.company_register_id}`,
-                  //   {
-                  //     state: { row }
-                  //   }
-                  // );
-                }}
               >
                 {row?.first_name}
               </TableCell>

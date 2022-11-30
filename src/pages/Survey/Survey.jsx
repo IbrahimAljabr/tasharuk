@@ -23,11 +23,12 @@ function Survey({ lang }) {
   const navigate = useNavigate();
   const auth = cookie.get("auth");
 
-  const id = useLocation()?.state?.user;
+  const { user, schoolId } = useLocation()?.state;
 
   const [data, setData] = useState([]);
-  console.log(`🚀🚀 ~~ Survey ~~ data`, data);
+  console.log(`🚀🚀 ~~ Survey ~~ data`, data[1]);
   const [formValues, setFormValues] = useState({ schema: "" });
+  console.log(`🚀🚀 ~~ Survey ~~ formValues`, formValues);
   const [formErrors, setFormErrors] = useState({ schema: "" });
   const [snack, setSnack] = useState({
     open: false,
@@ -48,9 +49,9 @@ function Survey({ lang }) {
   const validate = (value) => {
     const errors = {};
 
-    // if (!value.schema) {
-    //   errors.schema = "Schema Is Required";
-    // }
+    if (!value.schema) {
+      errors.schema = "Schema Is Required";
+    }
 
     return errors;
   };
@@ -58,7 +59,7 @@ function Survey({ lang }) {
   const addUser = async () => {
     const body = {
       school_schemas_id: formValues?.schema,
-      school_users_id: id
+      school_users_id: user?.id
     };
     console.log(`🚀🚀 ~~ addUser ~~ body`, body);
     try {
@@ -81,8 +82,9 @@ function Survey({ lang }) {
   }, [formErrors]);
 
   const getSchoolSchema = async () => {
-    const res = await getAllSchoolSchema(id);
-    console.log(`🚀🚀 ~~ getSchoolSchema ~~ res`, res);
+    const res = await getAllSchoolSchema(schoolId);
+    console.log(`🚀🚀 ~~ addUser ~~ 🚀🚀🚀🚀`, res);
+
     setData(res?.response_body);
   };
 
@@ -111,9 +113,9 @@ function Survey({ lang }) {
                 onChange={handleChange}
                 name='schema'
               >
-                {data?.map(({ schema }) => (
+                {data?.map((schema) => (
                   <MenuItem key={schema.id} value={schema.id}>
-                    {schema.name_en}
+                    {schema?.schema.name_en}
                   </MenuItem>
                 ))}
               </SelectInput>

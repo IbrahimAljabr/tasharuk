@@ -47,8 +47,7 @@ function Schema({ lang }) {
     };
 
     try {
-      const data = await editSchema(editId, body);
-      console.log(`🚀🚀 ~~ handleEditSchema ~~ data`, data);
+      await editSchema(editId, body);
       getSchema();
       setOpen(false);
       setEdit(false);
@@ -77,7 +76,9 @@ function Schema({ lang }) {
     setFormValues({
       ...formValues,
       name: body?.name_en,
-      description: body?.description
+      description: body?.description,
+      isActive: body?.is_active,
+      schemaId: body?.id
     });
     setEditId(body?.id);
   };
