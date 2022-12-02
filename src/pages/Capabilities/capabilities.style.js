@@ -43,6 +43,17 @@ export const ModelContainer = styled(Box)`
   display: flex;
 `;
 
+export const ModelContainerUrl = styled(ModelContainer)`
+  width: 30rem;
+  min-height: 10rem;
+  flex-direction: column;
+
+  p {
+    margin: 5rem;
+    font-size: 1rem;
+  }
+`;
+
 export const ModelHeader = styled.div`
   display: flex;
   align-items: flex-start;

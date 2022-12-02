@@ -45,7 +45,11 @@ function CreateSurvey({ lang }) {
           Add Users
         </LineButton>
       </Create>
-      <PositionsTable data={data} id={id} />
+      <PositionsTable
+        data={data}
+        id={id}
+        getSchoolSchema={getSchoolSchema}
+      />
     </Container>
   );
 }

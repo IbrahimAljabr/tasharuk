@@ -1,5 +1,12 @@
 import Container from "@mui/material/Container";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { useLocation } from "react-router-dom";
+import Snackbars from "../../components/SnackBar";
+import {
+  getIndicatorsByEmail,
+  getRubricsById,
+  updateRubrics
+} from "../../services/survey";
 import {
   AnswerContainer,
   DateText,
@@ -9,75 +16,109 @@ import {
 } from "./questions.style";
 
 function Questions({ lang }) {
-  const [currentQuestions, setCurrentQuestions] = useState(0);
   const [currentSelected, setCurrentSelected] = useState(false);
+  console.log(`📌 📁 ~ currentSelected`, currentSelected);
+  const [snack, setSnack] = useState({
+    open: false,
+    type: "success",
+    message: ""
+  });
 
-  const questions = [
-    {
-      questionText: "What is the capital of France?",
-      answerOptions: [
-        { answerText: "New York", isCorrect: false },
-        { answerText: "London", isCorrect: false },
-        { answerText: "Paris", isCorrect: true },
-        { answerText: "Dublin", isCorrect: false }
-      ]
-    },
-    {
-      questionText: "Who is CEO of Tesla?",
-      answerOptions: [
-        { answerText: "Jeff Bezos", isCorrect: false },
-        { answerText: "Elon Musk", isCorrect: true },
-        { answerText: "Bill Gates", isCorrect: false },
-        { answerText: "Tony Stark", isCorrect: false }
-      ]
-    },
-    {
-      questionText: "The iPhone was created by which company?",
-      answerOptions: [
-        { answerText: "Apple", isCorrect: true },
-        { answerText: "Intel", isCorrect: false },
-        { answerText: "Amazon", isCorrect: false },
-        { answerText: "Microsoft", isCorrect: false }
-      ]
-    },
-    {
-      questionText: "How many Harry Potter books are there?",
-      answerOptions: [
-        { answerText: "1", isCorrect: false },
-        { answerText: "4", isCorrect: false },
-        { answerText: "6", isCorrect: false },
-        { answerText: "7", isCorrect: true }
-      ]
-    }
-  ];
+  const [btn, setBtn] = useState(false);
+  const [rubricData, setRubricData] = useState([]);
+  const [indicatorData, setIndicatorData] = useState([]);
 
-  const handleNext = () => {
-    const nextQuestion = currentQuestions + 1;
-    if (nextQuestion < questions.length) {
-      setCurrentQuestions((c) => c + 1);
+  const user = useLocation()?.state;
+
+  const getSurvey = async () => {
+    try {
+      const res = await getIndicatorsByEmail(
+        user?.schemaId,
+        user?.email
+      );
+      setIndicatorData(res.response_body);
+      const rubricRes = await getRubricsById(
+        res?.response_body?.current_indicator?.id
+      );
+      setRubricData(rubricRes?.response_body);
+    } catch (error) {
+      console.log(`📌 📁 ~ error`, error?.response?.data);
     }
   };
 
+  const handleNext = async () => {
+    if (currentSelected) {
+      try {
+        setBtn(true);
+        const res = await updateRubrics(
+          user?.schemaId,
+          user?.email,
+          rubricData?.[0]?.id
+        );
+
+        setIndicatorData(res.response_body);
+        const rubricRes = await getRubricsById(
+          res?.response_body?.current_indicator?.id
+        );
+
+        setRubricData(rubricRes?.response_body);
+        setCurrentSelected(false);
+
+        setBtn(false);
+      } catch (error) {
+        console.log(`📌 📁 ~ error`, error);
+      }
+    } else {
+      setSnack({
+        ...snack,
+        open: true,
+        message: "Please Select One",
+        type: "error"
+      });
+    }
+  };
+
+  useEffect(() => {
+    getSurvey();
+  }, []);
+
   return (
     <Container dir={lang === "arabic" ? "rtl" : undefined}>
-      <DateText>20:00</DateText>
+      {indicatorData?.is_completed && (
+        <DateText>
+          <h1>Survey is Completed</h1>
+          <h2>Your Score Is {indicatorData?.score}</h2>
+        </DateText>
+      )}
 
-      <QuestionsText>
-        <h1>{questions[currentQuestions]?.questionText}</h1>
-      </QuestionsText>
+      {!indicatorData?.is_completed ? (
+        <>
+          <QuestionsText>
+            <h1>
+              {indicatorData?.current_indicator?.description_en}
+            </h1>
+          </QuestionsText>
 
-      <AnswerContainer>
-        {questions[currentQuestions]?.answerOptions?.map((answer) => (
-          <SelectedAnswer
-            onClick={() => setCurrentSelected(answer.answerText)}
-            active={currentSelected === answer.answerText && true}
-          >
-            {answer.answerText}
-          </SelectedAnswer>
-        ))}
+          <AnswerContainer>
+            {rubricData?.map(({ description_en, id }) => (
+              <SelectedAnswer
+                onClick={() => setCurrentSelected(id)}
+                active={currentSelected === id}
+                key={id}
+              >
+                {description_en}
+              </SelectedAnswer>
+            ))}
 
-        <NextButton onClick={handleNext}>Next</NextButton>
-      </AnswerContainer>
+            {rubricData?.length ? (
+              <NextButton disabled={btn} onClick={handleNext}>
+                Next
+              </NextButton>
+            ) : null}
+          </AnswerContainer>
+        </>
+      ) : null}
+      <Snackbars setOpen={setSnack} type={snack} />
     </Container>
   );
 }

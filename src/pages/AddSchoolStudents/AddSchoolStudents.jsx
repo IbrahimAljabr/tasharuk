@@ -196,11 +196,6 @@ function AddSchoolStudents({ lang }) {
     <Container dir={lang === "arabic" ? "rtl" : undefined}>
       <SubContainer>
         <LineButton
-          onClick={() => navigate(`/add-school-students/${id}`)}
-        >
-          Add Users
-        </LineButton>
-        <LineButton
           onClick={() =>
             navigate(`/survey/${id.id}`, {
               state: id.id

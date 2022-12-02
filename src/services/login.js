@@ -21,7 +21,6 @@ export const login = async (uname, pass) => {
       }
     }
   );
-  console.log(`🚀🚀 ~~ login🚀🚀 ~~ data🚀🚀`, data);
 
   return data;
 };

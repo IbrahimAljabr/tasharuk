@@ -12,10 +12,12 @@ import { TdDelete, TdEdit } from "../../components/Table/table.style";
 import { useNavigate } from "react-router-dom";
 import { ReactComponent as Delete } from "../../assets/icons/delete.svg";
 import { ReactComponent as Edit } from "../../assets/icons/edit.svg";
+import { useSchool } from "../../contexts/UserContext";
 
 function SchemaTable({ data, handleEdit, handleDelete }) {
-  console.log(`🚀🚀 ~~ SchemaTable ~~ data`, data);
   const navigate = useNavigate();
+
+  const { setHistory } = useSchool();
 
   return (
     <TableContainer component={Paper} sx={{ marginBottom: 15 }}>
@@ -64,30 +66,19 @@ function SchemaTable({ data, handleEdit, handleDelete }) {
                   cursor: "pointer"
                 }}
                 align='center'
-                onClick={() =>
+                onClick={() => {
+                  setHistory(["/schema"]);
                   navigate(`/capabilities/${row?.id}`, {
                     state: { row: row?.id }
-                  })
-                }
+                  });
+                  setHistory((c) => [
+                    ...c,
+                    `/capabilities/${row?.id}`
+                  ]);
+                }}
               >
                 {row?.name_en}
               </TableCell>
-
-              {/* <TableCell
-                sx={{ borderRight: 1, borderColor: "lightgray" }}
-                style={{ width: 100 }}
-                align='center'
-              >
-                <TdEdit
-                  onClick={() =>
-                    navigate(`/link-school/${row?.id}`, {
-                      state: { row: row?.id }
-                    })
-                  }
-                >
-                  <AddCircleOutlineIcon />
-                </TdEdit>
-              </TableCell> */}
 
               <TableCell
                 sx={{ borderRight: 1, borderColor: "lightgray" }}

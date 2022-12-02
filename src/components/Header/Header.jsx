@@ -15,7 +15,6 @@ import {
 function Header() {
   const navigate = useNavigate();
   const { pathname } = useLocation();
-  console.log(`🚀🚀 ~~ Header ~~ pathname`, pathname);
   const path = pathname?.split("/")[1];
   return (
     <>
@@ -72,6 +71,7 @@ function Header() {
             </li>
             <li onClick={() => navigate("/create-survey")}>Survey</li>
           </BlackNavBar> */}
+          {/* <BasicBreadcrumbs /> */}
         </HeaderContainer>
       </SubHeader>
     </>

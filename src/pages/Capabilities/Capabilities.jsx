@@ -31,13 +31,13 @@ function Capabilities({ lang }) {
   });
   const [edit, setEdit] = useState(false);
   const [editId, setEditId] = useState(0);
+
   const [snack, setSnack] = useState({
     open: false,
     type: "success",
     message: ""
   });
   const id = useLocation()?.state?.row;
-  console.log(`🚀🚀 ~~ Capabilities ~~ id`, id);
 
   const handleChange = (event) => {
     const { name, value } = event.target;
@@ -103,7 +103,6 @@ function Capabilities({ lang }) {
   const getCapabilities = async () => {
     try {
       const res = await getAllCapability(id);
-      console.log(`🚀🚀 ~~ getCapabilities ~~ res`, res);
       setData(res?.response_body);
     } catch (error) {
       console.log(

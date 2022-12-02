@@ -9,7 +9,7 @@ import React, { useState } from "react";
 import Snackbars from "../../components/SnackBar";
 import { addPosition, deletePosition } from "../../services/survey";
 import { PositionInput } from "../CreateSchool/create-school.style";
-function PositionsTable({ data, id}) {
+function PositionsTable({ data, id, getSchoolSchema }) {
   console.log(`🚀🚀 ~~ PositionsTable ~~ data`, data);
   const [snack, setSnack] = useState({
     open: false,
@@ -34,6 +34,7 @@ function PositionsTable({ data, id}) {
           message: "Added Successfully",
           type: "success"
         });
+        getSchoolSchema();
       } catch (error) {
         console.log(
           `🚀🚀 ~~ handleChange ~~ error`,
@@ -56,6 +57,7 @@ function PositionsTable({ data, id}) {
           message: "Removed Successfully",
           type: "success"
         });
+        getSchoolSchema();
       } catch (error) {
         console.log(
           `🚀🚀 ~~ handleChange ~~ error`,
@@ -101,7 +103,6 @@ function PositionsTable({ data, id}) {
         </TableHead>
 
         <TableBody>
-          
           {data?.map((row) => (
             <TableRow key={row?.id}>
               <TableCell
@@ -120,28 +121,28 @@ function PositionsTable({ data, id}) {
               >
                 <PositionInput
                   type='checkbox'
-                  checked= {row?.positions_ids.includes(12)}
+                  checked={row?.positions_ids.includes(12)}
                   onChange={(e) => handleChange(e, row?.id)}
                   id='12'
                 />
                 Student
                 <PositionInput
                   type='checkbox'
-                  checked= {row?.positions_ids.includes(13)}
+                  checked={row?.positions_ids.includes(13)}
                   onChange={(e) => handleChange(e, row?.id)}
                   id='13'
                 />
                 Teacher
                 <PositionInput
                   type='checkbox'
-                  checked= {row?.positions_ids.includes(14)}
+                  checked={row?.positions_ids.includes(14)}
                   onChange={(e) => handleChange(e, row?.id)}
                   id='14'
                 />
                 Management
                 <PositionInput
                   type='checkbox'
-                  checked= {row?.positions_ids.includes(15)}
+                  checked={row?.positions_ids.includes(15)}
                   onChange={(e) => handleChange(e, row?.id)}
                   id='15'
                 />

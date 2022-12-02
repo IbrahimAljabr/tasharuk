@@ -26,6 +26,13 @@ const routes = [
     disableNavbar: true
   },
   {
+    component: lazy(() => import("./pages/Login/Login")),
+    label: "login",
+    path: "/school-schema/:id/email/:id",
+    title: "Login",
+    disableNavbar: true
+  },
+  {
     component: lazy(() =>
       import("./pages/Capabilities/Capabilities")
     ),
@@ -121,7 +128,8 @@ const routes = [
     component: lazy(() => import("./pages/Questions/Questions")),
     label: "Questions",
     path: "/questions",
-    title: "Questions"
+    title: "Questions",
+    disableNavbar: true
   }
 ];
 

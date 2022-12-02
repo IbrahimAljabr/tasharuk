@@ -1,6 +1,7 @@
 import AddCircleIcon from "@mui/icons-material/AddCircle";
 import { FormControl, InputLabel, MenuItem } from "@mui/material";
 import Container from "@mui/material/Container";
+import Modal from "@mui/material/Modal";
 import cookie from "cookiejs";
 import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
@@ -9,7 +10,15 @@ import {
   addUserToSchema,
   getAllSchoolSchema
 } from "../../services/schemas";
-import { Create } from "../Capabilities/capabilities.style";
+import { getUserById } from "../../services/school";
+import {
+  Create,
+  CreateContainer,
+  ModelBody,
+  ModelContainerUrl,
+  ModelHeader,
+  ModelSwitch
+} from "../Capabilities/capabilities.style";
 import {
   ErrorText,
   FormContainer,
@@ -22,19 +31,34 @@ import {
 function Survey({ lang }) {
   const navigate = useNavigate();
   const auth = cookie.get("auth");
+  const appUrl = "http://localhost:3000";
+
+  const [userUrl, setUserUrl] = useState("");
+  const [userData, setUserData] = useState("");
+  console.log(`🚀🚀 ~~ Survey ~~ userData`, userData);
+
+  const [open, setOpen] = useState(false);
+  const handleOpen = () => setOpen(true);
+  const handleClose = () => setOpen(false);
 
   const { user, schoolId } = useLocation()?.state;
 
   const [data, setData] = useState([]);
-  console.log(`🚀🚀 ~~ Survey ~~ data`, data[1]);
   const [formValues, setFormValues] = useState({ schema: "" });
-  console.log(`🚀🚀 ~~ Survey ~~ formValues`, formValues);
   const [formErrors, setFormErrors] = useState({ schema: "" });
+
   const [snack, setSnack] = useState({
     open: false,
     type: "success",
     message: ""
   });
+
+  const showUrl = async () => {
+    console.log(
+      `🚀🚀 ~~ showUrl ~~ userData?.email`,
+      userData?.email
+    );
+  };
 
   const handleChange = (event) => {
     const { name, value } = event.target;
@@ -63,7 +87,23 @@ function Survey({ lang }) {
     };
     console.log(`🚀🚀 ~~ addUser ~~ body`, body);
     try {
-      await addUserToSchema(body);
+      const res = await addUserToSchema(body);
+
+      const userRes = await getUserById(
+        res?.response_body?.school_user_id
+      );
+
+      const url = `${appUrl}/school-schema/${formValues?.schema}/email/${userRes?.response_body?.email}`;
+      console.log(`🚀🚀 ~~ 🚀🚀 ~~ 🚀🚀`, url);
+      setUserUrl(url);
+      setOpen(true);
+
+      setSnack({
+        ...snack,
+        open: true,
+        message: "Added Successfully",
+        type: "success"
+      });
     } catch (error) {
       console.log(`🚀🚀 ~~ addUser ~~ error`, error?.response?.data);
       setSnack({
@@ -98,10 +138,34 @@ function Survey({ lang }) {
 
   return (
     <Container dir={lang === "arabic" ? "rtl" : undefined}>
-      <Create>
-        <AddCircleIcon />
-        <p>Create New Survey for user</p>
-      </Create>
+      <CreateContainer>
+        <Create>
+          <AddCircleIcon />
+          <p>Create New Survey for user</p>
+        </Create>
+
+        <Modal
+          open={open}
+          onClose={handleClose}
+          aria-labelledby='modal-modal-title'
+          aria-describedby='modal-modal-description'
+          disableEnforceFocus
+        >
+          <ModelContainerUrl>
+            <ModelHeader>
+              This URL should be send to the users
+            </ModelHeader>
+
+            <ModelBody>
+              <ModelSwitch>
+                <p>{userUrl}</p>
+              </ModelSwitch>
+            </ModelBody>
+            <OutLineButton onClick={handleClose}>Done</OutLineButton>
+          </ModelContainerUrl>
+        </Modal>
+      </CreateContainer>
+
       <FormContainer>
         <SurveyForm>
           <p>Select Schema</p>

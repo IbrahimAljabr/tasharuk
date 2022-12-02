@@ -1,6 +1,6 @@
 import cookie from "cookiejs";
 import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import loginImage from "../../assets/images/login.png";
 import Snackbars from "../../components/SnackBar";
 import { login } from "../../services/login";
@@ -18,13 +18,18 @@ export default function Login() {
   const [password, setPassword] = useState("");
   const [userNameIsValid, setUserNameIsValid] = useState(true);
   const [passwordIsValid, setPasswordIsValid] = useState(true);
+
   const [snack, setSnack] = useState({
     open: false,
     type: "success",
     message: ""
   });
+
   const navigate = useNavigate();
   const auth = cookie.get("auth");
+
+  const { pathname } = useLocation();
+  const userPath = pathname.split("/")?.[1] === "school-schema";
 
   const handleUserNameChange = (e) => setUserName(e.target.value);
   const handlePasswordChange = (e) => setPassword(e.target.value);
@@ -52,32 +57,44 @@ export default function Login() {
 
     if (password.length > 1 && userName.length > 1) {
       try {
-        await login(userName, password);
+        if (userPath) {
+          await login(userName, password);
 
-        cookie("auth", "Authenticated");
+          navigate("/questions", {
+            state: {
+              schemaId: pathname.split("/")?.[2],
+              email: userName
+            }
+          });
+        } else {
+          await login(userName, password);
+          cookie("auth", "Authenticated");
+          navigate("/school-management");
+        }
+
         setSnack({
           ...snack,
           open: true,
           message: "Welcome",
           type: "success"
         });
-        navigate("/school-management");
       } catch (error) {
+        console.log(`📌 📁 ~ error`, error?.response?.data);
         setSnack({
           ...snack,
           open: true,
           message: "Wrong User Name OR Password",
           type: "error"
         });
-
-        console.log(`🚀🚀 ~~ error`, error);
       }
     }
   };
 
   useEffect(() => {
-    if (auth) {
+    if (!userPath && auth) {
       navigate("/school-management");
+    } else if (userPath) {
+      setUserName(pathname.split("/")?.[4]);
     }
   }, []);
 
@@ -115,6 +132,7 @@ export default function Login() {
               value={password}
               onChange={handlePasswordChange}
               required
+              autoComplete='off'
             />
             {passwordIsValid ? (
               <Error />

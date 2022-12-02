@@ -6,10 +6,11 @@ UserContext.displayName = "UserContext";
 
 function User({ children }) {
   const [schoolData, setSchoolData] = useState({});
+  const [history, setHistory] = useState([]);
 
   const value = useMemo(
-    () => ({ setSchoolData, schoolData }),
-    [schoolData]
+    () => ({ setSchoolData, schoolData, history, setHistory }),
+    [setSchoolData, schoolData, history, setHistory]
   );
 
   return (

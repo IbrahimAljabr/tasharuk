@@ -5,26 +5,27 @@ export const QuestionsText = styled.div`
 `;
 
 export const DateText = styled.div`
-  margin: 2rem 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  width: 100%;
+  height: 25rem;
 `;
 
 export const AnswerContainer = styled.div`
   margin: 2rem 0;
-
-  &:last-child {
-    align-items: flex-end;
-  }
 `;
 
-export const NextButton = styled.div`
+export const NextButton = styled.button`
   margin: 2rem 0;
-  padding: 1rem 2rem;
+  padding: 0.8rem 2rem;
   border: 1px solid lightgray;
   border-radius: 1rem;
-  width: 5rem;
-  font-size: 1.5rem;
+  font-size: 1.2rem;
   text-align: center;
   cursor: pointer;
+  background-color: white;
 `;
 
 export const SelectedAnswer = styled.p`

@@ -95,6 +95,10 @@ export const SubHeader = styled.div`
   height: 10rem;
 `;
 
+export const BreadcrumbsContainer = styled.div`
+  margin-top: 2rem;
+`;
+
 export const BlackNavBar = styled.ul`
   background-color: black;
   width: 100%;

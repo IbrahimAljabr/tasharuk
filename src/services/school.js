@@ -22,6 +22,14 @@ export const getUsers = async (id) => {
   return data;
 };
 
+export const getUserById = async (id) => {
+  const { data } = await axios.get(
+    `${REACT_APP_API_URL}/school-users/${id}`
+  );
+
+  return data;
+};
+
 export const createSchool = async (body) => {
   const { data } = await axios.post(
     `${REACT_APP_API_URL}/schools`,
@@ -32,13 +40,12 @@ export const createSchool = async (body) => {
 };
 
 export const addUsersBulk = async (id, formData) => {
-  console.log(`🚀🚀 ~~ addUsersBulk ~~ id, body`, id, formData);
   const { data } = await axios({
-    method:"post",
+    method: "post",
     url: `${REACT_APP_API_URL}/school-users/bulk-users/${id}`,
-    data:formData,
+    data: formData,
     headers: { "Content-Type": "multipart/form-data" }
-});
+  });
 
   return data;
 };
