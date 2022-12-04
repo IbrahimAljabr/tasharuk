@@ -65,7 +65,7 @@ function IndicatorTable({
                   cursor: "pointer"
                 }}
                 align='center'
-                onClick={() => handleNavigate(row?.id)}
+                onClick={() => handleNavigate(row)}
               >
                 {row?.description_en}
               </TableCell>

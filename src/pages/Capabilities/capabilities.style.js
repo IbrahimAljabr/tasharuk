@@ -20,6 +20,25 @@ export const Create = styled.div`
   }
 `;
 
+export const GoBack = styled.div`
+  height: 2rem;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  width: 20rem;
+
+  p {
+    padding: 0 1rem;
+    font-size: 1.8rem;
+  }
+
+  svg {
+    width: 3rem;
+    height: 3rem;
+  }
+`;
+
 export const CreateContainer = styled.div`
   display: flex;
   flex-direction: column;

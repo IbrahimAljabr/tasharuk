@@ -1,4 +1,5 @@
 import AddCircleIcon from "@mui/icons-material/AddCircle";
+import KeyboardBackspaceIcon from "@mui/icons-material/KeyboardBackspace";
 import Container from "@mui/material/Container";
 import cookie from "cookiejs";
 import React, { useEffect, useState } from "react";
@@ -10,7 +11,7 @@ import {
   editCapability,
   getAllCapability
 } from "../../services/capabilities";
-import { Create } from "./capabilities.style";
+import { Create, GoBack } from "./capabilities.style";
 import CapabilitiesModal from "./CapabilitiesModal";
 import CapabilitiesTable from "./Table";
 
@@ -67,7 +68,7 @@ function Capabilities({ lang }) {
 
   const addCapabilities = async () => {
     const body = {
-      schema_id: id,
+      schema_id: id.id,
       capability_name_en: formValues.name,
       order_no: order ? order + 1 : 1
     };
@@ -102,7 +103,7 @@ function Capabilities({ lang }) {
 
   const getCapabilities = async () => {
     try {
-      const res = await getAllCapability(id);
+      const res = await getAllCapability(id.id);
       setData(res?.response_body);
     } catch (error) {
       console.log(
@@ -170,8 +171,8 @@ function Capabilities({ lang }) {
     setEditId(body?.id);
   };
 
-  const handleNavigate = async (id) => {
-    navigate(`/sub-capability/${id}`, { state: { id } });
+  const handleNavigate = async (row) => {
+    navigate(`/sub-capability/${row?.id}`, { state: { row } });
   };
 
   useEffect(() => {
@@ -184,6 +185,10 @@ function Capabilities({ lang }) {
 
   return (
     <Container dir={lang === "arabic" ? "rtl" : undefined}>
+      <GoBack onClick={() => navigate(-1)}>
+        <KeyboardBackspaceIcon />
+        <p>{id.name_en}</p>
+      </GoBack>
       <Create>
         <AddCircleIcon />
         <p onClick={handleOpen}>

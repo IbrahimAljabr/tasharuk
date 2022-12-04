@@ -65,7 +65,7 @@ function CapabilitiesTable({
                   cursor: "pointer"
                 }}
                 align='center'
-                onClick={() => handleNavigate(row?.id)}
+                onClick={() => handleNavigate(row)}
               >
                 {row?.capability_name_en}
               </TableCell>

@@ -1,4 +1,5 @@
 import AddCircleIcon from "@mui/icons-material/AddCircle";
+import KeyboardBackspaceIcon from "@mui/icons-material/KeyboardBackspace";
 import Container from "@mui/material/Container";
 import Modal from "@mui/material/Modal";
 import cookie from "cookiejs";
@@ -13,6 +14,7 @@ import {
 } from "../../services/indicators";
 import {
   Create,
+  GoBack,
   ModelBody,
   ModelButton,
   ModelContainer,
@@ -28,14 +30,11 @@ function Indicator({ lang }) {
   const handleClose = () => setOpen(false);
   const navigate = useNavigate();
 
-  const id = useLocation()?.state?.id;
+  const indicator = useLocation()?.state?.row;
   const auth = cookie.get("auth");
 
   const [data, setData] = useState([]);
-  console.log(
-    `🚀🚀 ~~  ~~ `,
-    data?.[0]?.sub_capability?.capability?.schema?.id
-  );
+
   const [formValues, setFormValues] = useState({ description: "" });
   const [formErrors, setFormErrors] = useState({ description: "" });
   const [edit, setEdit] = useState(false);
@@ -104,10 +103,10 @@ function Indicator({ lang }) {
     return errors;
   };
 
-  const handleNavigate = async (id) => {
-    navigate(`/rubric/${id}`, {
+  const handleNavigate = async (row) => {
+    navigate(`/rubric/${row?.id}`, {
       state: {
-        id,
+        row,
         schemaId: data?.[0]?.sub_capability?.capability?.schema?.id
       }
     });
@@ -119,7 +118,7 @@ function Indicator({ lang }) {
 
   const addIndicator = async () => {
     const body = {
-      sub_capability_id: id,
+      sub_capability_id: indicator?.id,
       description_en: formValues.description,
       order_no: order ? order + 1 : 1
     };
@@ -154,7 +153,7 @@ function Indicator({ lang }) {
 
   const getIndicator = async () => {
     try {
-      const res = await getAllIndicator(id);
+      const res = await getAllIndicator(indicator?.id);
       setData(res?.response_body);
     } catch (error) {
       console.log(`🚀🚀 ~~ getIndicator ~~ error`, error?.response);
@@ -191,6 +190,10 @@ function Indicator({ lang }) {
 
   return (
     <Container dir={lang === "arabic" ? "rtl" : undefined}>
+      <GoBack onClick={() => navigate(-1)}>
+        <KeyboardBackspaceIcon />
+        <p>{indicator?.name_en}</p>
+      </GoBack>
       <Create>
         <AddCircleIcon />
         <p onClick={handleOpen}>Create a Indicator</p>

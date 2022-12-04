@@ -65,7 +65,7 @@ function SubCapabilityTable({
                   cursor: "pointer"
                 }}
                 align='center'
-                onClick={() => handleNavigate(row?.id)}
+                onClick={() => handleNavigate(row)}
               >
                 {row?.name_en}
               </TableCell>

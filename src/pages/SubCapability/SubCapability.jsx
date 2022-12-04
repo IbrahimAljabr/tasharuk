@@ -1,4 +1,5 @@
 import AddCircleIcon from "@mui/icons-material/AddCircle";
+import KeyboardBackspaceIcon from "@mui/icons-material/KeyboardBackspace";
 import Container from "@mui/material/Container";
 import Modal from "@mui/material/Modal";
 import cookie from "cookiejs";
@@ -13,6 +14,7 @@ import {
 } from "../../services/capabilities";
 import {
   Create,
+  GoBack,
   ModelBody,
   ModelButton,
   ModelContainer,
@@ -28,7 +30,8 @@ function SubCapability({ lang }) {
   const handleClose = () => setOpen(false);
   const navigate = useNavigate();
 
-  const id = useLocation()?.state?.id;
+  const subCap = useLocation()?.state?.row;
+  console.log(`📌 📁 ~ id`, subCap);
 
   const [data, setData] = useState([]);
   const [formValues, setFormValues] = useState({ name: "" });
@@ -102,12 +105,12 @@ function SubCapability({ lang }) {
   };
 
   const getSubCapability = async () => {
-    const res = await getAllSubCapabilityById(id);
+    const res = await getAllSubCapabilityById(subCap?.id);
     setData(res?.response_body);
   };
 
-  const handleNavigate = async (id) => {
-    navigate(`/indicator/${id}`, { state: { id } });
+  const handleNavigate = async (row) => {
+    navigate(`/indicator/${row?.id}`, { state: { row } });
   };
 
   let order = data.reduce((acc, value) => {
@@ -116,7 +119,7 @@ function SubCapability({ lang }) {
 
   const addSubCapabilities = async () => {
     const body = {
-      capability_id: id,
+      capability_id: subCap?.id,
       name_en: formValues.name,
       order_no: order ? order + 1 : 1
     };
@@ -179,6 +182,10 @@ function SubCapability({ lang }) {
 
   return (
     <Container dir={lang === "arabic" ? "rtl" : undefined}>
+      <GoBack onClick={() => navigate(-1)}>
+        <KeyboardBackspaceIcon />
+        <p>{subCap?.capability_name_en}</p>
+      </GoBack>
       <Create>
         <AddCircleIcon />
         <p onClick={handleOpen}>Create Sub-Capability</p>

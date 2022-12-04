@@ -3,7 +3,7 @@ import Container from "@mui/material/Container";
 import React, { useEffect, useState } from "react";
 import {
   Create,
-  CreateContainer,
+  GoBack,
   ModelBody,
   ModelButton,
   ModelContainer,
@@ -11,6 +11,7 @@ import {
   ModelSwitch
 } from "../Capabilities/capabilities.style";
 
+import KeyboardBackspaceIcon from "@mui/icons-material/KeyboardBackspace";
 import Modal from "@mui/material/Modal";
 import cookie from "cookiejs";
 import { useLocation, useNavigate } from "react-router-dom";
@@ -33,7 +34,6 @@ function Rubric({ lang }) {
   const navigate = useNavigate();
 
   const indicator = useLocation()?.state;
-  console.log(`🚀🚀 ~~ Rubric ~~ indicator`, indicator?.schemaId);
 
   const value = {
     description: "",
@@ -43,7 +43,6 @@ function Rubric({ lang }) {
 
   const [data, setData] = useState([]);
   const [formValues, setFormValues] = useState(value);
-  console.log(`🚀🚀 ~~ Rubric ~~ formValues`, formValues);
   const [formErrors, setFormErrors] = useState(value);
   const [edit, setEdit] = useState(false);
   const [editId, setEditId] = useState(0);
@@ -125,17 +124,13 @@ function Rubric({ lang }) {
     return errors;
   };
 
-  const handleNavigate = async (id) => {
-    navigate(`/indicator/${id}`, { state: { id } });
-  };
-
   let order = data.reduce((acc, value) => {
     return (acc = acc > value.order_no ? acc : value.order_no);
   }, 0);
 
   const addRubric = async () => {
     const body = {
-      indicator_id: indicator?.id,
+      indicator_id: indicator?.row?.id,
       description_en: formValues.description,
       name_en: formValues.name,
       score: formValues.score,
@@ -196,7 +191,7 @@ function Rubric({ lang }) {
   }, [formErrors]);
 
   const getRubric = async () => {
-    const res = await getAllRubricById(indicator?.id);
+    const res = await getAllRubricById(indicator?.row?.id);
     setData(res?.response_body);
   };
 
@@ -210,86 +205,86 @@ function Rubric({ lang }) {
 
   return (
     <Container dir={lang === "arabic" ? "rtl" : undefined}>
-      <CreateContainer>
-        <Create>
-          <AddCircleIcon />
-          <p onClick={handleOpen}>Create Rubric</p>
-        </Create>
-        {/* <h1>capabilities</h1> */}
-        <Modal
-          open={open}
-          onClose={handleClose}
-          aria-labelledby='modal-modal-title'
-          aria-describedby='modal-modal-description'
-          disableEnforceFocus
-        >
-          <ModelContainer>
-            <ModelHeader>
-              <AddCircleIcon />
-              {edit ? <p>Edit Rubric</p> : <p>Create Rubric</p>}
-            </ModelHeader>
+      <GoBack onClick={() => navigate(-1)}>
+        <KeyboardBackspaceIcon />
+        <p>{indicator?.row?.description_en}</p>
+      </GoBack>
+      <Create>
+        <AddCircleIcon />
+        <p onClick={handleOpen}>Create Rubric</p>
+      </Create>
+      <Modal
+        open={open}
+        onClose={handleClose}
+        aria-labelledby='modal-modal-title'
+        aria-describedby='modal-modal-description'
+        disableEnforceFocus
+      >
+        <ModelContainer>
+          <ModelHeader>
+            <AddCircleIcon />
+            {edit ? <p>Edit Rubric</p> : <p>Create Rubric</p>}
+          </ModelHeader>
 
-            <ModelBody>
-              <form>
-                <ModelSwitch>
-                  <p>Rubric Name</p>
-                </ModelSwitch>
-                <div>
-                  <input
-                    type='text'
-                    required
-                    name='name'
-                    onChange={handleChange}
-                    value={formValues?.name}
-                    autoComplete='off'
-                  />
-                  <ErrorText>{formErrors.name}</ErrorText>
-                </div>
-                <ModelSwitch>
-                  <p>Rubric Description</p>
-                </ModelSwitch>
-                <div>
-                  <textarea
-                    type='text'
-                    required
-                    name='description'
-                    onChange={handleChange}
-                    value={formValues?.description}
-                  />
-                  <ErrorText>{formErrors.description}</ErrorText>
-                </div>
-                <ModelSwitch>
-                  <p>Rubric Score</p>
-                </ModelSwitch>
-                <div>
-                  <input
-                    type='text'
-                    required
-                    name='score'
-                    onChange={handleChange}
-                    value={formValues?.score}
-                  />
-                  <ErrorText>{formErrors.score}</ErrorText>
-                </div>
-                <ModelButton
-                  type='submit'
-                  onClick={edit ? handleEditCapability : handleSubmit}
-                >
-                  {edit ? <>Edit Rubric</> : <>Add Rubric</>}
-                </ModelButton>
-                <ModelButton onClick={handleClose} cancel='true'>
-                  Cancel
-                </ModelButton>
-              </form>
-            </ModelBody>
-          </ModelContainer>
-        </Modal>
-      </CreateContainer>
+          <ModelBody>
+            <form>
+              <ModelSwitch>
+                <p>Rubric Name</p>
+              </ModelSwitch>
+              <div>
+                <input
+                  type='text'
+                  required
+                  name='name'
+                  onChange={handleChange}
+                  value={formValues?.name}
+                  autoComplete='off'
+                />
+                <ErrorText>{formErrors.name}</ErrorText>
+              </div>
+              <ModelSwitch>
+                <p>Rubric Description</p>
+              </ModelSwitch>
+              <div>
+                <textarea
+                  type='text'
+                  required
+                  name='description'
+                  onChange={handleChange}
+                  value={formValues?.description}
+                />
+                <ErrorText>{formErrors.description}</ErrorText>
+              </div>
+              <ModelSwitch>
+                <p>Rubric Score</p>
+              </ModelSwitch>
+              <div>
+                <input
+                  type='text'
+                  required
+                  name='score'
+                  onChange={handleChange}
+                  value={formValues?.score}
+                />
+                <ErrorText>{formErrors.score}</ErrorText>
+              </div>
+              <ModelButton
+                type='submit'
+                onClick={edit ? handleEditCapability : handleSubmit}
+              >
+                {edit ? <>Edit Rubric</> : <>Add Rubric</>}
+              </ModelButton>
+              <ModelButton onClick={handleClose} cancel='true'>
+                Cancel
+              </ModelButton>
+            </form>
+          </ModelBody>
+        </ModelContainer>
+      </Modal>
       <Snackbars setOpen={setSnack} type={snack} />
 
       <RubricTable
         data={data}
-        handleNavigate={handleNavigate}
         handleDelete={handleDelete}
         handleEdit={handleEdit}
       />

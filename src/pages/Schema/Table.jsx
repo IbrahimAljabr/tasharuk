@@ -69,12 +69,8 @@ function SchemaTable({ data, handleEdit, handleDelete }) {
                 onClick={() => {
                   setHistory(["/schema"]);
                   navigate(`/capabilities/${row?.id}`, {
-                    state: { row: row?.id }
+                    state: { row }
                   });
-                  setHistory((c) => [
-                    ...c,
-                    `/capabilities/${row?.id}`
-                  ]);
                 }}
               >
                 {row?.name_en}
