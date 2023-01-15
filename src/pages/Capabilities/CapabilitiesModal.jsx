@@ -19,7 +19,8 @@ function CapabilitiesModal({
   formErrors,
   formValues,
   handleEditCapability,
-  edit
+  edit,
+  loading
 }) {
   console.log(`🚀🚀🚀🚀 ~~ edit`, edit);
   return (
@@ -54,12 +55,17 @@ function CapabilitiesModal({
             </div>
 
             <ModelButton
+              disabled={loading}
               type='submit'
               onClick={edit ? handleEditCapability : handleSubmit}
             >
               {edit ? <>Edit Capability</> : <>Add Capability</>}
             </ModelButton>
-            <ModelButton onClick={handleClose} cancel='true'>
+            <ModelButton
+              disabled={loading}
+              onClick={handleClose}
+              cancel='true'
+            >
               Cancel
             </ModelButton>
           </form>

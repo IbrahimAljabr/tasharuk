@@ -37,6 +37,7 @@ function Schema({ lang }) {
     type: "success",
     message: ""
   });
+  const [loading, setLoading] = useState(false);
 
   const handleEditSchema = async (event) => {
     event.preventDefault();
@@ -47,9 +48,11 @@ function Schema({ lang }) {
     };
 
     try {
+      setLoading(true);
       await editSchema(editId, body);
       getSchema();
       setOpen(false);
+      setLoading(false);
       setEdit(false);
       setFormValues(initialValue);
       setSnack({
@@ -61,6 +64,7 @@ function Schema({ lang }) {
       setFormValues(initialValue);
       setFormErrors(initialValue);
     } catch (error) {
+      setLoading(false);
       setSnack({
         ...snack,
         open: true,
@@ -119,7 +123,9 @@ function Schema({ lang }) {
     };
 
     try {
+      setLoading(true);
       await createSchema(body);
+      setLoading(false);
       setOpen(false);
       getSchema();
       setSnack({
@@ -131,6 +137,7 @@ function Schema({ lang }) {
       setFormValues(initialValue);
       setFormErrors(initialValue);
     } catch (error) {
+      setLoading(false);
       setSnack({
         ...snack,
         open: true,
@@ -188,6 +195,7 @@ function Schema({ lang }) {
           handleEditCapability={handleEditSchema}
           edit={edit}
           formValues={formValues}
+          loading={loading}
         />
       </Create>
       <SchemaTable

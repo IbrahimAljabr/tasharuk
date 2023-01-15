@@ -24,7 +24,8 @@ function SchemaModal({
   formErrors,
   handleEditCapability,
   edit,
-  formValues
+  formValues,
+  loading
 }) {
   const [data, setData] = useState({});
   const editActiveSchema = async (value) => {
@@ -97,12 +98,17 @@ function SchemaModal({
               <ErrorText>{formErrors.description}</ErrorText>
             </div>
             <ModelButton
+              disabled={loading}
               type='submit'
               onClick={edit ? handleEditCapability : handleSubmit}
             >
               {edit ? <>Edit Schema</> : <>Add Schema</>}
             </ModelButton>
-            <ModelButton onClick={handleClose} cancel='true'>
+            <ModelButton
+              disabled={loading}
+              onClick={handleClose}
+              cancel='true'
+            >
               Cancel
             </ModelButton>
           </form>

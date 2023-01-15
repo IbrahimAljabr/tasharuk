@@ -26,6 +26,7 @@ import IndicatorTable from "./Table";
 
 function Indicator({ lang }) {
   const [open, setOpen] = useState(false);
+  const [loading, setLoading] = useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
   const navigate = useNavigate();
@@ -63,8 +64,9 @@ function Indicator({ lang }) {
     };
 
     try {
+      setLoading(true);
       await editIndicator(editId, body);
-
+      setLoading(false);
       getIndicator();
       setOpen(false);
       setEdit(false);
@@ -77,6 +79,7 @@ function Indicator({ lang }) {
       setFormValues({ description: "" });
       setFormErrors({ description: "" });
     } catch (error) {
+      setLoading(false);
       setSnack({
         ...snack,
         open: true,
@@ -124,7 +127,9 @@ function Indicator({ lang }) {
     };
 
     try {
+      setLoading(true);
       await createIndicator(body);
+      setLoading(false);
       setOpen(false);
       getIndicator();
       setSnack({
@@ -136,6 +141,7 @@ function Indicator({ lang }) {
       setFormValues({ description: "" });
       setFormErrors({ description: "" });
     } catch (error) {
+      setLoading(false);
       setSnack({
         ...snack,
         open: true,
@@ -231,12 +237,17 @@ function Indicator({ lang }) {
                 </div>
 
                 <ModelButton
+                  disabled={loading}
                   type='submit'
                   onClick={edit ? handleEditCapability : handleSubmit}
                 >
                   {edit ? <>Edit Indicator</> : <>Add Indicator</>}
                 </ModelButton>
-                <ModelButton onClick={handleClose} cancel='true'>
+                <ModelButton
+                  disabled={loading}
+                  onClick={handleClose}
+                  cancel='true'
+                >
                   Cancel
                 </ModelButton>
               </form>

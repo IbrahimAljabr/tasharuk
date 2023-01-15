@@ -17,6 +17,7 @@ import CapabilitiesTable from "./Table";
 
 function Capabilities({ lang }) {
   const [open, setOpen] = useState(false);
+  const [loading, setLoading] = useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
   const navigate = useNavigate();
@@ -74,9 +75,11 @@ function Capabilities({ lang }) {
     };
 
     try {
+      setLoading(true);
       await createCapabilities(body);
       getCapabilities();
       setOpen(false);
+      setLoading(false);
       setSnack({
         ...snack,
         open: true,
@@ -86,6 +89,7 @@ function Capabilities({ lang }) {
       setFormValues({ name: "", description: "" });
       setFormErrors({ name: "", description: "" });
     } catch (error) {
+      setLoading(false);
       setSnack({
         ...snack,
         open: true,
@@ -141,7 +145,9 @@ function Capabilities({ lang }) {
     };
 
     try {
+      setLoading(true);
       await editCapability(editId, body);
+      setLoading(false);
       getCapabilities();
       setOpen(false);
       setEdit(false);
@@ -155,6 +161,7 @@ function Capabilities({ lang }) {
       setFormValues({ name: "", description: "" });
       setFormErrors({ name: "", description: "" });
     } catch (error) {
+      setLoading(false);
       setSnack({
         ...snack,
         open: true,
@@ -172,7 +179,7 @@ function Capabilities({ lang }) {
   };
 
   const handleNavigate = async (row) => {
-    navigate(`/sub-capability/${row?.id}`, { state: { row } });
+    navigate(`/user-capability/${row?.id}`, { state: { row } });
   };
 
   useEffect(() => {
@@ -208,6 +215,7 @@ function Capabilities({ lang }) {
           formValues={formValues}
           edit={edit}
           handleEditCapability={handleEditCapability}
+          loading={loading}
         />
       </Create>
       <CapabilitiesTable

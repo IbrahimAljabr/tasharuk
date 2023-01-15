@@ -28,6 +28,7 @@ import RubricTable from "./Table";
 
 function Rubric({ lang }) {
   const [open, setOpen] = useState(false);
+  const [loading, setLoading] = useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
 
@@ -62,10 +63,12 @@ function Rubric({ lang }) {
     };
 
     try {
+      setLoading(true);
       await editRubric(editId, body);
       getRubric();
       setOpen(false);
       setEdit(false);
+      setLoading(false);
       setFormValues(value);
       setSnack({
         ...snack,
@@ -74,6 +77,7 @@ function Rubric({ lang }) {
         type: "success"
       });
     } catch (error) {
+      setLoading(false);
       setSnack({
         ...snack,
         open: true,
@@ -142,7 +146,9 @@ function Rubric({ lang }) {
     };
 
     try {
+      setLoading(true);
       await createRubric(body);
+      setLoading(false);
       setOpen(false);
       getRubric();
       setSnack({
@@ -155,6 +161,8 @@ function Rubric({ lang }) {
       setFormValues(value);
       setFormErrors(value);
     } catch (error) {
+      console.log(`📌 📁 ~ error`, error);
+      setLoading(false);
       setSnack({
         ...snack,
         open: true,
@@ -269,12 +277,17 @@ function Rubric({ lang }) {
                 <ErrorText>{formErrors.score}</ErrorText>
               </div>
               <ModelButton
+                disabled={loading}
                 type='submit'
                 onClick={edit ? handleEditCapability : handleSubmit}
               >
                 {edit ? <>Edit Rubric</> : <>Add Rubric</>}
               </ModelButton>
-              <ModelButton onClick={handleClose} cancel='true'>
+              <ModelButton
+                disabled={loading}
+                onClick={handleClose}
+                cancel='true'
+              >
                 Cancel
               </ModelButton>
             </form>

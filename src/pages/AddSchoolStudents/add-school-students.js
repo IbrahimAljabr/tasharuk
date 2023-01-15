@@ -7,7 +7,7 @@ export const SubContainer = styled.div`
   align-items: center;
 `;
 
-export const OutLineButton = styled.div`
+export const OutLineButton = styled.button`
   padding: 0.5rem 6rem;
   background-color: #81d0c7;
   border-radius: 2rem;

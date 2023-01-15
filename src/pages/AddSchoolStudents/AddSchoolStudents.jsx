@@ -40,6 +40,7 @@ function AddSchoolStudents({ lang }) {
   };
 
   const [data, setData] = useState([]);
+  const [loading, setLoading] = useState(false);
   const [formValues, setFormValues] = useState(initialValue);
   const [formErrors, setFormErrors] = useState(initialValue);
   const [positions, setPositions] = useState([]);
@@ -151,6 +152,7 @@ function AddSchoolStudents({ lang }) {
     };
 
     try {
+      setLoading(false);
       const user = await addSchoolUser(body);
       setFormValues(initialValue);
       setFormErrors(initialValue);
@@ -160,10 +162,14 @@ function AddSchoolStudents({ lang }) {
         message: "User added successfully",
         type: "success"
       });
+      setLoading(true);
+
       navigate(`/create-survey`, {
         state: { user: user?.response_body, schoolId: id.id }
       });
     } catch (error) {
+      setLoading(false);
+
       setSnack({
         ...snack,
         open: true,
@@ -290,7 +296,9 @@ function AddSchoolStudents({ lang }) {
           </div>
 
           <AddContainer>
-            <OutLineButton onClick={handleSubmit}>Add</OutLineButton>
+            <OutLineButton onClick={handleSubmit} disabled={loading}>
+              Add
+            </OutLineButton>
             <p>Or</p>
             <input onChange={handleInput} type='file' accept='.csv' />
           </AddContainer>

@@ -38,6 +38,15 @@ export const editSubCapability = async (id, body) => {
   return data;
 };
 
+export const editUserCapability = async (id, body) => {
+  const { data } = await axios.put(
+    `${REACT_APP_API_URL}/users-capabilities/${id}`,
+    body
+  );
+
+  return data;
+};
+
 export const deleteSubCapability = async (id) => {
   const { data } = await axios.delete(
     `${REACT_APP_API_URL}/sub-capabilities/${id}`
@@ -46,9 +55,17 @@ export const deleteSubCapability = async (id) => {
   return data;
 };
 
+export const deleteUserCapability = async (id) => {
+  const { data } = await axios.delete(
+    `${REACT_APP_API_URL}/users-capabilities//${id}`
+  );
+
+  return data;
+};
+
 export const getAllSubCapabilityById = async (id) => {
   const { data } = await axios.get(
-    `${REACT_APP_API_URL}/sub-capabilities/capabilities/${id}`
+    `${REACT_APP_API_URL}/sub-capabilities/users-capabilities/${id}`
   );
 
   return data;
@@ -70,6 +87,24 @@ export const createSubCapability = async (body) => {
     body
   );
   console.log(`🚀🚀 ~~ createCapabilities ~~ data`, data);
+
+  return data;
+};
+
+export const createUserCapability = async (body) => {
+  const { data } = await axios.post(
+    `${REACT_APP_API_URL}/users-capabilities`,
+    body
+  );
+  console.log(`🚀🚀 ~~ createCapabilities ~~ data`, data);
+
+  return data;
+};
+
+export const getAllUserCapabilityById = async (id) => {
+  const { data } = await axios.get(
+    `${REACT_APP_API_URL}/users-capabilities/capabilities/${id}`
+  );
 
   return data;
 };

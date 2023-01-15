@@ -61,6 +61,14 @@ const routes = [
     title: "Sub Capability"
   },
   {
+    component: lazy(() =>
+      import("./pages/UserCapability/UserCapability")
+    ),
+    label: "User Capability",
+    path: "/user-capability/:id",
+    title: "User Capability"
+  },
+  {
     component: lazy(() => import("./pages/Indicator/Indicator")),
     label: "Indicator",
     path: "/indicator/:id",

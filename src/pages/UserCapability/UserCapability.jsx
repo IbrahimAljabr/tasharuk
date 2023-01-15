@@ -7,10 +7,10 @@ import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import Snackbars from "../../components/SnackBar";
 import {
-  createSubCapability,
-  deleteSubCapability,
-  editSubCapability,
-  getAllSubCapabilityById
+  createUserCapability,
+  deleteUserCapability,
+  editUserCapability,
+  getAllUserCapabilityById
 } from "../../services/capabilities";
 import {
   Create,
@@ -24,14 +24,14 @@ import {
 import { ErrorText } from "../CreateSchool/create-school.style";
 import SubCapabilityTable from "./Table";
 
-function SubCapability({ lang }) {
+function UserCapability({ lang }) {
   const [open, setOpen] = useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
   const navigate = useNavigate();
 
   const subCap = useLocation()?.state?.row;
-  console.log(`📌 📁📁📁📁 ~ id`, subCap);
+  console.log(`📌 📁 ~ subCap`, subCap);
 
   const [data, setData] = useState([]);
   const [formValues, setFormValues] = useState({ name: "" });
@@ -54,7 +54,7 @@ function SubCapability({ lang }) {
   const handleSubmit = async (event) => {
     event.preventDefault();
     setFormErrors(validate(formValues));
-    getSubCapability();
+    getUserCapability();
   };
 
   const validate = (value) => {
@@ -76,8 +76,8 @@ function SubCapability({ lang }) {
 
     try {
       setLoading(true);
-      await editSubCapability(editId, body);
-      getSubCapability();
+      await editUserCapability(editId, body);
+      getUserCapability();
       setOpen(false);
       setLoading(false);
       setEdit(false);
@@ -108,13 +108,13 @@ function SubCapability({ lang }) {
     setEditId(body?.id);
   };
 
-  const getSubCapability = async () => {
-    const res = await getAllSubCapabilityById(subCap?.id);
+  const getUserCapability = async () => {
+    const res = await getAllUserCapabilityById(subCap?.id);
     setData(res?.response_body);
   };
 
   const handleNavigate = async (row) => {
-    navigate(`/indicator/${row?.id}`, { state: { row } });
+    navigate(`/sub-capability/${row?.id}`, { state: { row } });
   };
 
   let order = data.reduce((acc, value) => {
@@ -123,17 +123,17 @@ function SubCapability({ lang }) {
 
   const addSubCapabilities = async () => {
     const body = {
-      users_capability_id: subCap?.id,
+      capability_id: subCap?.id,
       name_en: formValues.name,
       order_no: order ? order + 1 : 1
     };
 
     try {
       setLoading(true);
-      await createSubCapability(body);
+      await createUserCapability(body);
       setLoading(false);
       setOpen(false);
-      getSubCapability();
+      getUserCapability();
       setSnack({
         ...snack,
         open: true,
@@ -143,7 +143,6 @@ function SubCapability({ lang }) {
       setFormValues({ name: "" });
       setFormErrors({ name: "" });
     } catch (error) {
-      console.log(`📌 📁 ~ error`, error);
       setLoading(false);
       setSnack({
         ...snack,
@@ -156,8 +155,8 @@ function SubCapability({ lang }) {
 
   const handleDelete = async (id) => {
     try {
-      await deleteSubCapability(id);
-      getSubCapability();
+      await deleteUserCapability(id);
+      getUserCapability();
       setSnack({
         ...snack,
         open: true,
@@ -182,7 +181,7 @@ function SubCapability({ lang }) {
 
   useEffect(() => {
     if (auth) {
-      getSubCapability();
+      getUserCapability();
     } else {
       navigate("/");
     }
@@ -192,11 +191,11 @@ function SubCapability({ lang }) {
     <Container dir={lang === "arabic" ? "rtl" : undefined}>
       <GoBack onClick={() => navigate(-1)}>
         <KeyboardBackspaceIcon />
-        <p>{subCap?.name_en}</p>
+        <p>{subCap?.capability_name_en}</p>
       </GoBack>
       <Create>
         <AddCircleIcon />
-        <p onClick={handleOpen}>Create Sub-Capability</p>
+        <p onClick={handleOpen}>Create User-Capability</p>
         <Modal
           open={open}
           onClose={handleClose}
@@ -208,16 +207,16 @@ function SubCapability({ lang }) {
             <ModelHeader>
               <AddCircleIcon />
               {edit ? (
-                <p>Edit Sub-Capability</p>
+                <p>Edit User-Capability</p>
               ) : (
-                <p>Create Sub-Capability</p>
+                <p>Create User-Capability</p>
               )}
             </ModelHeader>
 
             <ModelBody>
               <form>
                 <ModelSwitch>
-                  <p>Sub-Capability Name</p>
+                  <p>User-Capability Name</p>
                 </ModelSwitch>
                 <div>
                   <input
@@ -236,9 +235,9 @@ function SubCapability({ lang }) {
                   onClick={edit ? handleEditCapability : handleSubmit}
                 >
                   {edit ? (
-                    <>Edit Sub Capability</>
+                    <>Edit User Capability</>
                   ) : (
-                    <>Add sub Capability</>
+                    <>Add User Capability</>
                   )}
                 </ModelButton>
                 <ModelButton
@@ -265,4 +264,4 @@ function SubCapability({ lang }) {
   );
 }
 
-export default SubCapability;
+export default UserCapability;

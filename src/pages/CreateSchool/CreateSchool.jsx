@@ -41,6 +41,7 @@ function CreateSchool({ lang }) {
   const [formValues, setFormValues] = useState(initialValue);
   console.log(`🚀🚀 ~~ CreateSchool ~~ formValues`, formValues);
   const [formErrors, setFormErrors] = useState(initialValue);
+  const [loading, setLoading] = useState(false);
   const [countries, setCountries] = useState([]);
   const [snack, setSnack] = useState({
     open: false,
@@ -126,11 +127,14 @@ function CreateSchool({ lang }) {
     event.preventDefault();
 
     try {
+      setLoading(true);
       await editSchool(body);
       setFormValues(initialValue);
       setFormErrors(initialValue);
+      setLoading(false);
       navigate(`/school-management`);
     } catch (error) {
+      setLoading(false);
       setSnack({
         ...snack,
         open: true,
@@ -142,11 +146,14 @@ function CreateSchool({ lang }) {
 
   const createNewSchool = async () => {
     try {
+      setLoading(true);
       const data = await createSchool(body);
       const row = data?.response_body;
+      setLoading(false);
       navigate(`/survey/${row.id}`, { state: row.id });
     } catch (error) {
       console.log(`🚀🚀 `, error?.response?.data);
+      setLoading(false);
       setSnack({
         ...snack,
         open: true,
@@ -328,6 +335,7 @@ function CreateSchool({ lang }) {
           </div>
 
           <OutLineButton
+            disabled={loading}
             onClick={oldData ? handleEdit : handleSubmit}
             type='submit'
           >
